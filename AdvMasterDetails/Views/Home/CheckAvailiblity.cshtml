@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewBag.Title = "CheckAvailiblity";
+    Layout = "~/Views/Shared/_Dashboard.cshtml";
+}
+<section class="content-header">
+    <h1>
+        Availibility
+        <small>Items Availibility</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Tables</a></li>
+        <li class="active">Check Availibility</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- /.box -->
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Date Time Range</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group" style="margin-left:21px;">
+                        <label for="dtp_input1" class="col-md-2 control-label">@*<i class="fa fa-clock-o" aria-hidden="true"></i>*@⏰ Issue Date Time</label>
+                        <div class="input-group date form_datetime col-md-3" data-date="" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                            <input class="form-control" size="16" type="text" id="FromDate" value="" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        <input type="hidden" id="dtp_input1" value="" /><br />
+                    </div>
+                    <div class="form-group" style="margin-left:21px;">
+                        <label for="dtp_input1" class="col-md-2 control-label">@*<i class="fa fa-clock-o" aria-hidden="true"></i>*@⏰ Return Date Time</label>
+                        <div class="input-group date form_datetime col-md-3" data-date="" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                            <input class="form-control" size="16" type="text" id="ToDate" value="" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        <input type="hidden" id="dtp_input1" value="" /><br />
+                    </div>
+                </div>
+                <div class="details" style="width:100%;">
+                    <h2 style="padding:5px 10px;">
+                        📋 items
+                    </h2>
+                    <table class="table table-responsive">
+                        <tr>
+                            <td style="text-align:center;color:white;" bgcolor="black">Category</td>
+                            <td style="text-align:center;color:white;" bgcolor="black">Product</td>
+                            <td style="text-align:center;color:white;" bgcolor="black">Quantity</td>
+                            <td style="text-align:center;color:white;" bgcolor="black">&nbsp;</td>
+                        </tr>
+                        <tr class="mycontainer" id="mainrow">
+                            <td>
+                                <select id="productCategory" class="pc form-control" onchange="LoadProduct(this)">
+                                    <option>Select</option>
+                                </select>
+                                <span class="error">Select Category</span>
+                            </td>
+                            <td>
+                                <select id="product" class="product form-control">
+                                    <option>Select</option>
+                                </select>
+                                <span class="error">Select Product</span>
+                            </td>
+                            <td>
+                                <input type="text" id="quantity" class="quantity form-control" placeholder="Only Numeric Allowed" />
+                                <span class="error">Valid quantity required</span>
+                            </td>
+                            @*<td>
+                                    <input type="text" id="rate" class="rate form-control" />
+                                    <span class="error">Valid rate required</span>
+                                </td>*@
+                            <td>
+                                <input type="button" id="Add" value="➕ Add  " style="width:100px;" class="btn btn-success" />
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="searchItems">
+                        <table class="table table-responsive" id="searchdetailsItems"></table>
+                        <span id="searchItemsError" style="color:red"></span>
+                    </div>
+                    <div style="padding:10px 10px; text-align:right">
+                        <input id="submit" type="button" value="🔍 Availibility Items" class="btn btn-success" style="padding:10px 20px" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+<!-- /.content-wrapper -->
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="~/Scripts/myScripts.js"></script>
+<script type="text/javascript">
+    $('.form_datetime').datetimepicker({
+        //language:  'fr',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
+        showMeridian: 1
+    });
+    $('.form_date').datetimepicker({
+        //language:  'fr',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+    $('.form_time').datetimepicker({
+        language: 'fr',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 1,
+        minView: 0,
+        maxView: 1,
+        forceParse: 0
+    });
+</script>

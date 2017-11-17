@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "Order Placeholder";
+}
+<div class="header-foot">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 freeHead_section emailVerification">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        @if (ViewBag.Status != null && Convert.ToBoolean(ViewBag.Status))
+                        {
+
+
+                            <div class="page-head-title wow fadeInDown" style="visibility: visible; animation-name: fadeInDown;">
+                                <img src="http://promaxhdevents.com/wp-content/uploads/2016/07/new-logo02-e1468052055630.png" alt="logo">
+                                <h1>Cart Mail Successful Sent</h1>
+                                <i class="glyphicon glyphicon-ok"></i>
+                            </div>
+                            <div class="head-content">
+                                <p>Order Has been Approved a Mail Copy has been successfully sent Customer</p>
+                                <a href="~/Home" title="Back to home"><i class="glyphicon glyphicon-arrow-left hvr-icon-buzz"></i> Back to home</a>
+                            </div>
+
+
+                        }
+                        else
+                        {
+                            <div class="page-head-title wow fadeInDown" style="visibility: visible; animation-name: fadeInDown;">
+                                <img src="http://promaxhdevents.com/wp-content/uploads/2016/07/new-logo02-e1468052055630.png" alt="logo">
+                                <h1>Invalid Request</h1>
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </div>
+                            <div class="head-content">
+                                <p>Timeout/Invalid Email</p>
+                                <a href="~/Home" title="Back to home"><i class="glyphicon glyphicon-arrow-left hvr-icon-buzz"></i> Back to Dashboard</a>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

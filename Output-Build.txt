@@ -1,0 +1,14 @@
+﻿1>------ Build started: Project: AdvMasterDetails, Configuration: Debug Any CPU ------
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(78,34,78,36): warning CS0168: The variable 'ex' is declared but never used
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(255,30,255,32): warning CS0168: The variable 'ex' is declared but never used
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(378,20,378,30): warning CS0219: The variable 'Orderstate' is assigned but its value is never used
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(641,21,641,31): warning CS0612: 'HTMLWorker' is obsolete
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(641,49,641,59): warning CS0612: 'HTMLWorker' is obsolete
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(666,30,666,35): warning CS0168: The variable 'exmsg' is declared but never used
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(862,21,862,31): warning CS0612: 'HTMLWorker' is obsolete
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(862,49,862,59): warning CS0612: 'HTMLWorker' is obsolete
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(886,30,886,35): warning CS0168: The variable 'exmsg' is declared but never used
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(1112,21,1112,31): warning CS0612: 'HTMLWorker' is obsolete
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(1112,49,1112,59): warning CS0612: 'HTMLWorker' is obsolete
+1>C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\Controllers\HomeController.cs(1136,29,1136,34): warning CS0168: The variable 'exmsg' is declared but never used
+1>  AdvMasterDetails -> C:\Users\AT systems\Desktop\AdvMasterDetails\AdvMasterDetails\AdvMasterDetails\bin\AdvMasterDetails.dll

@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AdvMasterDetails.Models
+namespace AdvMasterDetails
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+    
     public partial class OrderMaster
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]

@@ -86,6 +86,21 @@
           <Property Name="StatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="OptionStatus" Type="nvarchar" MaxLength="30" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'InventoryDB.dbo.UserLogin' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="UserLogin">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Email" />
+            <PropertyRef Name="Password" />
+            <PropertyRef Name="SecretKey" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="SecretKey" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AdminType" Type="bit" />
+        </EntityType>
         <Association Name="FK_OrderDetails_MasterOrder">
           <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="1" />
           <End Role="OrderDetails" Type="Self.OrderDetails" Multiplicity="*" />
@@ -126,6 +141,15 @@
           <EntitySet Name="Remark" EntityType="Self.Remark" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RemarksTable" EntityType="Self.RemarksTable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserLogin" EntityType="Self.UserLogin" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [UserLogin].[ID] AS [ID], 
+    [UserLogin].[Email] AS [Email], 
+    [UserLogin].[Password] AS [Password], 
+    [UserLogin].[SecretKey] AS [SecretKey], 
+    [UserLogin].[AdminType] AS [AdminType]
+    FROM [dbo].[UserLogin] AS [UserLogin]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_OrderDetails_MasterOrder" Association="Self.FK_OrderDetails_MasterOrder">
             <End Role="OrderMaster" EntitySet="OrderMaster" />
             <End Role="OrderDetails" EntitySet="OrderDetails" />
@@ -248,7 +272,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="InventoryDBEntities3" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="InventoryDBEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Options" EntityType="Self.Option" />
           <EntitySet Name="OrderDetails" EntityType="Self.OrderDetail" />
@@ -265,7 +289,7 @@
             <End Role="OrderDetails" EntitySet="OrderDetails" />
             <End Role="RemarksTable" EntitySet="RemarksTables" />
           </AssociationSet>
-          <FunctionImport Name="sp_ProductAvailibility" ReturnType="Collection(InventoryDBModel.sp_ProductAvailibility_Result)">
+          <FunctionImport Name="sp_ProductAvailibility" ReturnType="Collection(Int32)">
             <Parameter Name="FromD" Mode="In" Type="String" />
             <Parameter Name="ToD" Mode="In" Type="String" />
             <Parameter Name="ProdId" Mode="In" Type="Int32" />
@@ -279,30 +303,27 @@
             <Parameter Name="Status" Mode="In" Type="String" />
             <Parameter Name="Qnt" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="UserLogins" EntityType="InventoryDBModel.UserLogin" />
         </EntityContainer>
-        <ComplexType Name="sp_ProductAvailibility_Result">
-          <Property Type="Int32" Name="OrderDetailsID" Nullable="false" />
-          <Property Type="Guid" Name="GUID" Nullable="false" />
-          <Property Type="String" Name="FromDate" Nullable="true" MaxLength="40" />
-          <Property Type="String" Name="ToDate" Nullable="true" MaxLength="40" />
-          <Property Type="Int32" Name="OrderID" Nullable="false" />
-          <Property Type="Int32" Name="ProductID" Nullable="false" />
-          <Property Type="Decimal" Name="Rate" Nullable="true" Precision="8" Scale="2" />
-          <Property Type="Int32" Name="Quantity" Nullable="false" />
-          <Property Type="String" Name="Status" Nullable="true" MaxLength="20" />
-          <Property Type="String" Name="Remarks" Nullable="true" MaxLength="50" />
-          <Property Type="Int32" Name="ProductID1" Nullable="false" />
-          <Property Type="Int32" Name="CategoryID" Nullable="false" />
-          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="50" />
-          <Property Type="Int32" Name="CountMax" Nullable="true" />
-          <Property Type="Int32" Name="CountMin" Nullable="true" />
-        </ComplexType>
+        <EntityType Name="UserLogin">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Email" />
+            <PropertyRef Name="Password" />
+            <PropertyRef Name="SecretKey" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="SecretKey" Type="Guid" Nullable="false" />
+          <Property Name="AdminType" Type="Boolean" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="InventoryDBModelStoreContainer" CdmEntityContainer="InventoryDBEntities3">
+        <EntityContainerMapping StorageEntityContainer="InventoryDBModelStoreContainer" CdmEntityContainer="InventoryDBEntities1">
           <EntitySetMapping Name="Categories">
             <EntityTypeMapping TypeName="InventoryDBModel.Category">
               <MappingFragment StoreEntitySet="Categories">
@@ -392,28 +413,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="sp_ProductAvailibility" FunctionName="InventoryDBModel.Store.sp_ProductAvailibility">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="InventoryDBModel.sp_ProductAvailibility_Result">
-                <ScalarProperty Name="OrderDetailsID" ColumnName="OrderDetailsID" />
-                <ScalarProperty Name="GUID" ColumnName="GUID" />
-                <ScalarProperty Name="FromDate" ColumnName="FromDate" />
-                <ScalarProperty Name="ToDate" ColumnName="ToDate" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
-                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
-                <ScalarProperty Name="Rate" ColumnName="Rate" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
-                <ScalarProperty Name="ProductID1" ColumnName="ProductID1" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
-                <ScalarProperty Name="CountMax" ColumnName="CountMax" />
-                <ScalarProperty Name="CountMin" ColumnName="CountMin" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_ProductAvailibility" FunctionName="InventoryDBModel.Store.sp_ProductAvailibility" />
           <FunctionImportMapping FunctionImportName="ProductAvailibility" FunctionName="InventoryDBModel.Store.sp_ProductAvailibility" />
+          <EntitySetMapping Name="UserLogins">
+            <EntityTypeMapping TypeName="InventoryDBModel.UserLogin">
+              <MappingFragment StoreEntitySet="UserLogin">
+                <ScalarProperty Name="AdminType" ColumnName="AdminType" />
+                <ScalarProperty Name="SecretKey" ColumnName="SecretKey" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

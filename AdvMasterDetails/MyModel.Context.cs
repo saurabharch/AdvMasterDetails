@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AdvMasterDetails.Models
+namespace AdvMasterDetails
 {
     using System;
     using System.Data.Entity;
@@ -15,10 +15,10 @@ namespace AdvMasterDetails.Models
     using System.Data.Entity.Core.Objects;
     using System.Linq;
     
-    public partial class InventoryDBEntities3 : DbContext
+    public partial class InventoryDBEntities1 : DbContext
     {
-        public InventoryDBEntities3()
-            : base("name=InventoryDBEntities3")
+        public InventoryDBEntities1()
+            : base("name=InventoryDBEntities1")
         {
         }
     
@@ -35,8 +35,9 @@ namespace AdvMasterDetails.Models
         public virtual DbSet<Remark> Remarks { get; set; }
         public virtual DbSet<RemarksTable> RemarksTables { get; set; }
         public virtual DbSet<Status> Status { get; set; }
+        public virtual DbSet<UserLogin> UserLogins { get; set; }
     
-        public virtual ObjectResult<sp_ProductAvailibility_Result> sp_ProductAvailibility(string fromD, string toD, Nullable<int> prodId, string status, Nullable<int> qnt)
+        public virtual ObjectResult<Nullable<int>> sp_ProductAvailibility(string fromD, string toD, Nullable<int> prodId, string status, Nullable<int> qnt)
         {
             var fromDParameter = fromD != null ?
                 new ObjectParameter("FromD", fromD) :
@@ -58,7 +59,7 @@ namespace AdvMasterDetails.Models
                 new ObjectParameter("Qnt", qnt) :
                 new ObjectParameter("Qnt", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_ProductAvailibility_Result>("sp_ProductAvailibility", fromDParameter, toDParameter, prodIdParameter, statusParameter, qntParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("sp_ProductAvailibility", fromDParameter, toDParameter, prodIdParameter, statusParameter, qntParameter);
         }
     
         public virtual ObjectResult<OrderDetail> ProductAvailibility(string fromD, string toD, Nullable<int> prodId, string status, Nullable<int> qnt)

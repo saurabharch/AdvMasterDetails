@@ -13,13 +13,18 @@ using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using iTextSharp.text.html.simpleparser;
 using System.Text;
-using AdvMasterDetails.Models;
+using AdvMasterDetails;
+using System.Globalization;
+using System.Web.Security;
+using System.Security.Principal;
+using System.Web.UI.WebControls;
+using System.Web.UI;
 
 namespace AdvMasterDetails.Controllers
 {
     public class HomeController : Controller
     {
-        InventoryDBEntities3 dc = new InventoryDBEntities3();
+        InventoryDBEntities1 dc = new InventoryDBEntities1();
         public ActionResult Index()
         {
             return View();
@@ -30,7 +35,7 @@ namespace AdvMasterDetails.Controllers
         public JsonResult getProductCategories()
         {
             List<Category> categories = new List<Category>();
-            using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+            using (InventoryDBEntities1 dc = new InventoryDBEntities1())
             {
                 categories = dc.Categories.OrderBy(a => a.CategortyName).ToList();
             }
@@ -42,7 +47,7 @@ namespace AdvMasterDetails.Controllers
         public JsonResult getProducts(int categoryID)
         {
             List<Product> products = new List<Product>();
-            using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+            using (InventoryDBEntities1 dc = new InventoryDBEntities1())
             {
                 products = dc.Products.Where(a => a.CategoryID.Equals(categoryID)).OrderBy(a => a.ProductName).ToList();
             }
@@ -60,14 +65,14 @@ namespace AdvMasterDetails.Controllers
         //    }
         //    return new JsonResult { Data = Remarks, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         //}
-
+       
         [HttpGet]
         public JsonResult ApprovedOrderList(bool check)
         {
-            List<Models.OrderMaster> Approve = new List<Models.OrderMaster>();
+            List<OrderMaster> Approve = new List<OrderMaster>();
             try
             {
-                using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+                using (InventoryDBEntities1 dc = new InventoryDBEntities1())
                 {
                     dc.Configuration.LazyLoadingEnabled = false;
                     Approve = dc.OrderMasters.Where(a => a.AdminApproved==check).OrderByDescending(a => a.OrderDate).ToList();
@@ -92,7 +97,7 @@ namespace AdvMasterDetails.Controllers
             var result = "";
             if (IsOrderNumberExist(OrderNumber))
             {
-                InventoryDBEntities3 _objError = new InventoryDBEntities3();
+                InventoryDBEntities1 _objError = new InventoryDBEntities1();
 
                 try
                 {
@@ -119,10 +124,11 @@ namespace AdvMasterDetails.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize]
         //Check Weather Order Id is Exist or not
         public bool IsOrderNumberExist(string Number)
         {
-            using (InventoryDBEntities3 de = new InventoryDBEntities3())
+            using (InventoryDBEntities1 de = new InventoryDBEntities1())
             {
                 var EC = de.OrderMasters.Where(a => a.OrderNo == Number).FirstOrDefault();
                 return EC != null;// if not equal to null means True
@@ -145,24 +151,25 @@ namespace AdvMasterDetails.Controllers
         //    // return new JsonResult { Data = OrderL, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         //    return j.Serialize(OrderL);
         //}
-
+        [Authorize]
         [HttpGet]        //Get Remarks List
         public JsonResult Remarks()
         {
             List<Remark> Remark = new List<Remark>();
-            using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+            using (InventoryDBEntities1 dc = new InventoryDBEntities1())
             {
                 Remark = dc.Remarks.OrderBy(a => a.RemarkId).ToList();
             }
             return new JsonResult { Data = Remark, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
+        [Authorize]
         public JsonResult RemarkProductList(string Orderid)
         {
             List<Product> Remark = new List<Product>();
             var Hello ="";
             
-            using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+            using (InventoryDBEntities1 dc = new InventoryDBEntities1())
             {
                 try
                 {
@@ -200,7 +207,7 @@ namespace AdvMasterDetails.Controllers
         public JsonResult GetStatus()
         {
             List<Status> State = new List<Status>();
-            using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+            using (InventoryDBEntities1 dc = new InventoryDBEntities1())
             {
                 State = dc.Status.OrderBy(a => a.OptionStatus).ToList();
             }
@@ -209,7 +216,7 @@ namespace AdvMasterDetails.Controllers
 
         //Save & Approval , WareHouse , Customer Copy Mail
         [HttpPost]
-        public JsonResult save(AdvMasterDetails.Models.OrderMaster order, RemarksTable RT,OrderDetail OD)
+        public JsonResult save(OrderMaster order, RemarksTable RT,OrderDetail OD)
         {
             bool status = false;
             string OrderList = "";
@@ -222,22 +229,22 @@ namespace AdvMasterDetails.Controllers
             {
                 DateTime dateOrg =DateTime.UtcNow;
                 string date = Convert.ToString(dateOrg.Date + "/" + dateOrg.Month + "/" + dateOrg.Year + " " + dateOrg.Hour + ":" + dateOrg.Minute + ":" + dateOrg.Second);
-                var isValidDate = DateTime.TryParseExact(dateOrg.Date + "/" + dateOrg.Month + "/" + dateOrg.Year + " " + dateOrg.Hour + ":" + dateOrg.Minute + ":" + dateOrg.Second, "mm-dd-yyyy", null, System.Globalization.DateTimeStyles.None, out dateOrg);
+                var isValidDate = DateTime.TryParseExact(order.OrderDateString, "mm-dd-yyyy", null, System.Globalization.DateTimeStyles.None, out dateOrg);
                 if (isValidDate)
                 {
-                    order.OrderDate = date;
-                   // orderDate = order.OrderDateString;
+                    //order.OrderDate = date;
+                   orderDate = order.OrderDateString;
                     //order.OrderDate = orderDate.To
                 }
                 var isValidModel = TryUpdateModel(order);
                 if (isValidModel)
                 {
-                    using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+                    using (InventoryDBEntities1 dc = new InventoryDBEntities1())
                     {
                         order.FromDate = order.FromDate;
                         order.ToDate = order.ToDate;
                         order.Company = order.Company;
-                        order.OrderDate = date;
+                        order.OrderDate = order.OrderDateString;
                         if (order.Status != null)
                         {
 
@@ -372,7 +379,7 @@ namespace AdvMasterDetails.Controllers
  "</tr>" +
  "<tr><td>";
                             string MainBody = "<table align = 'center' cellpadding = '0' cellspacing = '0' border = '0' > " +
-            "<tbody><tr><td style='font-size:30px;font-weight:600;'><h1>🚚 Order List</h1>" +
+            "<tbody><tr><td style='font-size:30px;font-weight:600;'><h3>🚚 Order List</h3>" +
             "</td></tr>" +
             "</tbody>" +
             "</table>" +
@@ -481,7 +488,6 @@ namespace AdvMasterDetails.Controllers
         // Approved Confirmation Mail
         [HttpGet]
         public ActionResult ApprovedOrder(string id, RemarksTable RT)
-
         {
             bool Status = false;
             string message = "";
@@ -493,7 +499,7 @@ namespace AdvMasterDetails.Controllers
             string orderDate = "";
             try
             {
-                using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+                using (InventoryDBEntities1 dc = new InventoryDBEntities1())
                 {
                     dc.Configuration.ValidateOnSaveEnabled = false; // Avoid Confirmation password does not match on save changes
                     var v = dc.OrderMasters.Where(a => a.GUID == new Guid(id)).FirstOrDefault();
@@ -647,7 +653,7 @@ namespace AdvMasterDetails.Controllers
         }
 
         //Ready to cart Mail
-
+        [Authorize]
         [HttpGet]
         public ActionResult OrderStatus(string id, RemarksTable RT)
         {
@@ -661,7 +667,7 @@ namespace AdvMasterDetails.Controllers
             // string Orderstate = "";
             try
             {
-                using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+                using (InventoryDBEntities1 dc = new InventoryDBEntities1())
                 {
                     dc.Configuration.ValidateOnSaveEnabled = false; // Avoid Confirmation password does not match on save changes
                     var v = dc.OrderMasters.Where(a => a.GUID == new Guid(id)).FirstOrDefault();
@@ -683,20 +689,21 @@ namespace AdvMasterDetails.Controllers
                         {
                             RT.GUID = OrderGlobalID[i].GUID;
                             OrderGlobalID[i].Status = "Ready - In Cart";
-                            OrderGlobalID[i].Remarks = "Rady - In Cart";
-                            dc.OrderDetails.Add(OrderGlobalID[i]);
+                            OrderGlobalID[i].Remarks = "Ready - In Cart";
+                           // dc.OrderDetails.Add(OrderGlobalID[i]);
                             dc.SaveChanges();
                             string RTGUID = Convert.ToString(RT.GUID);
                             var ProductIDD = dc.OrderDetails.Where(x => x.GUID == RT.GUID).FirstOrDefault();
                             int ProductId = ProductIDD.ProductID;
-                            int Quantity = ProductIDD.Quantity;
+                            int Quantity = 0;
+                            Quantity = ProductIDD.Quantity;
                             var ProName = dc.Products.Where(p => p.ProductID == ProductId).FirstOrDefault();
                             string ProductName = ProName.ProductName.ToString();
                             string ProductQuantity = Convert.ToString(Quantity);
                             int ProductMax = Convert.ToInt16(ProName.CountMax);
-                            int ProducntMin = Convert.ToInt16(ProName.CountMin);
+                            //int ProducntMin = Convert.ToInt16(ProName.CountMin);
                             int SrNo = i + 1;
-                            int CountShort = ProductMax - Convert.ToInt16(ProductQuantity);
+                            //int CountShort = ProductMax - Convert.ToInt16(ProductQuantity);
                             if (SrNo % 2 == 0)
                             {
                                 OrderList += "<tr><td border='1' style='border:1px solid #A3A3A3;padding:8px;vertical-align:top;' text-align='center'>" + SrNo + ".</td><td border='1' style='border:1px solid #A3A3A3;padding:8px;vertical-align:top;'> " + ProductName + " </td><td border='1' style='border:1px solid #A3A3A3;padding:8px;vertical-align:top;' text-align='center'>" + ProductQuantity + " Qty.</td></tr> ";
@@ -754,6 +761,7 @@ namespace AdvMasterDetails.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult OrderCancel(string id, RemarksTable RT)
         {
@@ -767,7 +775,7 @@ namespace AdvMasterDetails.Controllers
             // string Orderstate = "";
             try
             {
-                using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+                using (InventoryDBEntities1 dc = new InventoryDBEntities1())
                 {
                     dc.Configuration.ValidateOnSaveEnabled = false; // Avoid Confirmation password does not match on save changes
                     var v = dc.OrderMasters.Where(a => a.GUID == new Guid(id)).FirstOrDefault();
@@ -791,7 +799,7 @@ namespace AdvMasterDetails.Controllers
                             RT.GUID = OrderGlobalID[i].GUID;
                             OrderGlobalID[i].Status = "Cancelled";
                             OrderGlobalID[i].Remarks = "Cancelled";
-                            dc.OrderDetails.Add(OrderGlobalID[i]);
+                           // dc.OrderDetails.Add(OrderGlobalID[i]);
                             dc.SaveChanges();
                             string RTGUID = Convert.ToString(RT.GUID);
                             var ProductIDD = dc.OrderDetails.Where(x => x.GUID == RT.GUID).FirstOrDefault();
@@ -860,6 +868,9 @@ namespace AdvMasterDetails.Controllers
             ViewBag.Status = Status;
             return View();
         }
+
+       
+        [Authorize]
         //Load Dashboard
         [HttpGet]
         public ActionResult Dashboard()
@@ -869,29 +880,108 @@ namespace AdvMasterDetails.Controllers
 
         //Product Availibility in time range
         [HttpGet]
-        public ActionResult CheckAvailiblity()
+        public ActionResult CheckAvailiblity(string fromDate, string ToDate, string ProdId,string state, string Quantity)
+
+
         {
-            ViewBag.Message = ProdCheckAvailiblity("", "", 35, "Approved - Package", 1);
+            bool status = false;
+            string data = "";
+            string State = state;
+            int AVProdCount=0;
+            int Quant = Convert.ToInt16(Quantity);
+            int ProductID = Convert.ToInt16(ProdId);
+            try
+            {
+                //string dd = "17 November 2017 06:00 am";
+                //string ff = "17 November 2017  09:00 am";
+                //DateTime dateOrg;
+                //DateTime dateFrom;
+                //DateTime.TryParseExact(dd, "yyyy/MM/dd H:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOrg);
+                //DateTime.TryParseExact(ff, "yyyy/MM/dd H:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateFrom);
+                using (InventoryDBEntities1 dc = new InventoryDBEntities1())
+                {
+                    var AvProdCount = dc.sp_ProductAvailibility(fromDate, ToDate, ProductID, State, Quant).FirstOrDefault();
+                    AVProdCount = AvProdCount.Value;
+                    if (data != null)
+                    {
+                        status = true;
+                    }
+                    else
+                    {
+                        status = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                status = false;
+
+            }
+            //  return new JsonResult { Data = AVProdCount, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
             return View();
         }
-        
 
+        //Check Product Availibility in time range
+        //[HttpPost]
+        //public ActionResult CheckAvailiblity(string fromDate,string ToDate,string ProdId,string Quantity)
+        //{
+        //    bool status = false;
+        //    string data="";
+        //    string State = "";
+        //    int Quant = Convert.ToInt16(Quantity);
+        //    int ProductID = Convert.ToInt16(ProdId);
+        //    try
+        //    {
+        //        string dd = "17 November 2017 06:00 am";
+        //        string ff = "17 November 2017  09:00 am";
+        //        //DateTime dateOrg;
+        //        //DateTime dateFrom;
+        //        //DateTime.TryParseExact(dd, "yyyy/MM/dd H:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOrg);
+        //        //DateTime.TryParseExact(ff, "yyyy/MM/dd H:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateFrom);
+        //        using (InventoryDBEntities1 dc = new InventoryDBEntities1())
+        //        {
+        //            var AvProdCount = dc.sp_ProductAvailibility(dd, ff, ProductID, State, Quant).FirstOrDefault();
+        //            if (data != null)
+        //            {
+        //                status = true;
+        //            }
+        //            else
+        //            {
+        //                status = false;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        status = false;
+
+        //    }
+        //    return new JsonResult { Data = data, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        //}
+
+        [NonAction]
         //Checking Product is available withing the time period as per required quantity
         public bool ProdCheckAvailiblity(string fromDate, string ToDate,int prodid,string State,int Qnt)
         {
             bool status = false;
             try
             {
-                using (InventoryDBEntities3 dc = new InventoryDBEntities3())
+                //string dd = "17 November 2017 06:00 am";
+                //string ff = "17 November 2017  09:00 am";
+                //DateTime dateOrg;
+                //DateTime dateFrom;
+                //DateTime.TryParseExact(dd, "yyyy/MM/dd H:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOrg);
+                //DateTime.TryParseExact(ff, "yyyy/MM/dd H:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateFrom);
+                using (InventoryDBEntities1 dc = new InventoryDBEntities1())
                 {
-                    var data = dc.ProductAvailibility("17 November 2017 10:10 am", "17 November 2017  11:00 pm", prodid, State, Qnt);
+                    var data = dc.sp_ProductAvailibility(fromDate, ToDate, prodid, State, Qnt).FirstOrDefault();
                     if (data != null)
                     {
-                        status = false;
+                        status = true;
                     }
                     else
                     {
-                        status = true;
+                        status = false;
                     }
                 }
             }
@@ -948,7 +1038,7 @@ namespace AdvMasterDetails.Controllers
         "align-content: right;" +
     "}" +
 "</style>" +
-    "<title>Order List</title>" +
+    "<title>Promax Cart</title>" +
 "</head>" + "";
 
             string body = "<body>" +
@@ -1186,7 +1276,7 @@ namespace AdvMasterDetails.Controllers
             "padding: 8px;" +
             "}" +
             "</style>" +
-    "<title>Order List</title>" +
+    "<title>Promax Cart</title>" +
 "</head>" + "";
             string body = "<body>" +
             "<table align='center' cellpadding='10' cellspacing='0' style='width:729px!important;max-width:729px;border:0px solid rgba(0,0,0,0.1);background-color:#f3eeee1c;font-family:Segoe UI', Tahoma, Geneva, Verdana, sans-serif;'>" +
@@ -1416,7 +1506,7 @@ namespace AdvMasterDetails.Controllers
         "align-content: right;" +
     "}" +
 "</style>" +
-    "<title>Order List</title>" +
+    "<title>Promax Cart</title>" +
 "</head>" + "";
             string body = "<body>" +
             "<table align='center' cellpadding='10' cellspacing='0' style='width:729px!important;max-width:729px;border:0px solid rgba(0,0,0,0.1);background-color:#f3eeee1c;font-family:Segoe UI', Tahoma, Geneva, Verdana, sans-serif;'>" +
@@ -1466,7 +1556,7 @@ namespace AdvMasterDetails.Controllers
             "<tbody>" +
             "<tr>" + "<td>" +
             "<table align='center' cellpadding='0' cellspacing='0' border='0'>" +
-            "<tbody><tr><td style='font-size:30px;font-weight:600;'><h1>🚚 Order List</h1>" +
+            "<tbody><tr><td style='font-size:30px;font-weight:600;'><h3>🚚 Order List</h3>" +
             "</td></tr>" +
             "</tbody>" +
             "</table>" +

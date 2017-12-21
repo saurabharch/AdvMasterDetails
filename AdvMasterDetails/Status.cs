@@ -7,17 +7,14 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AdvMasterDetails.Models
+namespace AdvMasterDetails
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Product
+    public partial class Status
     {
-        public int ProductID { get; set; }
-        public int CategoryID { get; set; }
-        public string ProductName { get; set; }
-        public Nullable<int> CountMax { get; set; }
-        public Nullable<int> CountMin { get; set; }
+        public int StatusId { get; set; }
+        public string OptionStatus { get; set; }
     }
 }

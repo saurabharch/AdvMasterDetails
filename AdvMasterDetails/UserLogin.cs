@@ -7,20 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AdvMasterDetails.Models
+namespace AdvMasterDetails
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    public partial class RemarksTable
-    {
-        public int RemarkId { get; set; }
-        public Nullable<int> OrderDetailsID { get; set; }
-        public string Remark { get; set; }
-        public string Status { get; set; }
-        public string UpdateTime { get; set; }
-        public System.Guid GUID { get; set; }
     
-        public virtual OrderDetail OrderDetail { get; set; }
+    public partial class UserLogin
+    {
+        public int ID { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public System.Guid SecretKey { get; set; }
+        public Nullable<bool> AdminType { get; set; }
     }
 }

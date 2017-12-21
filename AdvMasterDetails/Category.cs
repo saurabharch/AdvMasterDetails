@@ -7,14 +7,14 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AdvMasterDetails.Models
+namespace AdvMasterDetails
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    public partial class Option
+    
+    public partial class Category
     {
-        public int Id { get; set; }
-        public string Options { get; set; }
+        public int CategoryID { get; set; }
+        public string CategortyName { get; set; }
     }
 }

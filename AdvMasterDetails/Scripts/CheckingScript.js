@@ -62,24 +62,14 @@ function LoadProduct(categoryDD) {
         }
     })
 }
-function guid() {
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-      s4() + '-' + s4() + s4() + s4();
+function getFdate() {
+    var date = $('#FromDate').val().trim();
+    return date;
 }
 
-function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-}
-
-
-
-function CurrentDateTime() {
-    var d = new Date();
-    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    var month = ["January", "Febrary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    return d.getDate() + " " + days[d.getDay()] + " " + month[d.getMonth()] + " " + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+function getTdate() {
+    var date = $('#ToDate').val().trim();
+    return date;
 }
 
 
@@ -133,7 +123,6 @@ $(document).ready(function () {
         }
 
     })
-
     //remove button click event
     $('#orderdetailsItems').on('click', '.remove', function () {
         $(this).parents('tr').remove();
@@ -149,7 +138,7 @@ $(document).ready(function () {
         $('#orderdetailsItems tbody tr').each(function (index, ele) {
             if (
                 $('select.product', this).val() == "0" ||
-                (parseInt($('.quantity', this).val()) || 0) == 0 
+                (parseInt($('.quantity', this).val()) || 0) == 0
                 ) {
                 errorItemCount++;
                 $(this).addClass('error');
@@ -157,11 +146,8 @@ $(document).ready(function () {
                 var orderItem = {
                     ProductID: $('select.product', this).val(),
                     Quantity: parseInt($('.quantity', this).val()),
-                    GUID: guid(),
                     FromDate: getFdate(),
                     ToDate: getTdate(),
-                    Status: 'wait for review',
-                    Remarks: 'Wait for approval',
                 }
                 list.push(orderItem);
             }
@@ -175,21 +161,6 @@ $(document).ready(function () {
         if (list.length == 0) {
             $('#orderItemError').text('At least 1 order item required.');
             isAllValid = false;
-        }
-
-        if ($('#orderNo').val().trim() == '') {
-            $('#orderNo').siblings('span.error').css('visibility', 'visible');
-            isAllValid = false;
-        }
-        else {
-            $('#orderNo').siblings('span.error').css('visibility', 'hidden');
-        }
-        if ($('#Email').val().trim() == '') {
-            $('#Email').siblings('span.error').css('visibility', 'visible');
-            isAllValid = false;
-        }
-        else {
-            $('#Email').siblings('span.error').css('visibility', 'hidden');
         }
         if ($('#FromDate').val().trim() == '') {
             $('#FromDate').siblings('span.error').css('visibility', 'visible');
@@ -205,72 +176,56 @@ $(document).ready(function () {
         else {
             $('#ToDate').siblings('span.error').css('visibility', 'hidden');
         }
-        if ($('#orderDate').val().trim() == '') {
-            $('#orderDate').siblings('span.error').css('visibility', 'visible');
-            isAllValid = false;
-        }
-        else {
-            $('#orderDate').siblings('span.error').css('visibility', 'hidden');
-        }
-        if ($('#phone').val().trim() == '') {
-            $('#phone').siblings('span.error').css('visibility', 'visible');
-            isAllValid = false;
-        }
-        else {
-            $('#phone').siblings('span.error').css('visibility', 'hidden');
-        }
-        if ($('#company').val().trim() == '') {
-            $('#company').siblings('span.error').css('visibility', 'visible');
-            isAllValid = false;
-        }
-        else {
-            $('#company').siblings('span.error').css('visibility', 'hidden');
-        }
 
         if (isAllValid) {
             var data = {
-                OrderNo: $('#orderNo').val().trim(),
-                OrderDateString: $('#orderDate').val().trim(),
-                Email: $('#Email').val().trim(),
-                FromDate: getFdate(),
-                ToDate: getTdate(),
-                ContactNo: $('#phone').val().trim(),
-                Company:$('#company').val().trim(),
                 OrderDetails: list
             }
 
             $(this).val('Please wait...');
+            var  FromDate= getFdate();
+            var ToDate = getTdate();
+            //var ProductID = 35;
+            //var Quantity = 2;
+            var States = "Approved - Package";
+            //var ProductID = $('select.product', this).val();
+            //var Quantity = parseInt($('.quantity', this).val());
+            //** Example Link : http://localhost:47367/home/CheckAvailiblity?fromDate=17%20November%202017%2006:00%20am&ToDate=23%20November%202017%2009:00%20am&ProdId=35&state=Approved%20-%20Package&Quantity=3 **//
+            for (var i = 0; i < list.length - 1; i++) {
+                var createStringP = list.product[i];
+                var createStringQ = list.quantity[i];
+                $.ajax({
+                    type: 'GET',
+                    url: '/home/CheckAvailiblity?fromDate=' + FromDate + '&ToDate=' + ToDate + '&ProdId=' + createStringP + '&state=Aprroved%20-%20Package&Quantity=' + createStringQ,
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.status) {
+                            alert(data.val);
+                            //here we will clear the form
+                           // list = [];
+                            //$('#FromDate', '#ToDate', '#product', '#quantity').val('');
+                            //$('#orderdetailsItems').empty();
+                            console.log(data.val);
+                        }
+                        else {
+                            console.log(data)
+                            alert('Error');
 
-            $.ajax({
-                type: 'POST',
-                url: '/home/save',
-                data: JSON.stringify(data),
-                contentType: 'application/json',
-                success: function (data) {
-                 if (data.status) {
-                        alert('Successfully Placed Order');
-                        //here we will clear the form
-                        list = [];
-                        $('#orderNo,#orderDate,#Email', '#FromDate', '#ToDate', '#orderDate', '#phone', '#company').val('');
-                        $('#orderdetailsItems').empty();
+                        }
+                        $('#submit').text('Check Availiblity');
+                        $(this).val('Availiblity');
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        $('#submit').text('Check Availiblity');
                     }
-                    else {
-                       // console.log(error)
-                        alert('Error');
-                        
-                    }
-                    $('#submit').text('Save');
-                    $(this).val('Save');
-                },
-                error: function (error) {
-                    console.log(error);
-                    $('#submit').text('Save');
-                }
-            });
+                });
+            }
+
+        
         }
 
     });
-
 });
-
 LoadCategory($('#productCategory'));

@@ -7,14 +7,14 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AdvMasterDetails.Models
+namespace AdvMasterDetails
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Status
+    public partial class Remark
     {
-        public int StatusId { get; set; }
-        public string OptionStatus { get; set; }
+        public int RemarkId { get; set; }
+        public string RemarkOption { get; set; }
     }
 }

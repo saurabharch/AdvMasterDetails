@@ -7,23 +7,14 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AdvMasterDetails.Models
+namespace AdvMasterDetails
 {
     using System;
-    using System.Linq;
-    public partial class sp_ProductAvailibility_Result
+    using System.Collections.Generic;
+    
+    public partial class Product
     {
-        public int OrderDetailsID { get; set; }
-        public System.Guid GUID { get; set; }
-        public string FromDate { get; set; }
-        public string ToDate { get; set; }
-        public int OrderID { get; set; }
         public int ProductID { get; set; }
-        public Nullable<decimal> Rate { get; set; }
-        public int Quantity { get; set; }
-        public string Status { get; set; }
-        public string Remarks { get; set; }
-        public int ProductID1 { get; set; }
         public int CategoryID { get; set; }
         public string ProductName { get; set; }
         public Nullable<int> CountMax { get; set; }

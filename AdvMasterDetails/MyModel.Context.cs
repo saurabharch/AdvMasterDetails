@@ -15,10 +15,10 @@ namespace AdvMasterDetails
     using System.Data.Entity.Core.Objects;
     using System.Linq;
     
-    public partial class InventoryDBEntities1 : DbContext
+    public partial class InventoryDBEntities : DbContext
     {
-        public InventoryDBEntities1()
-            : base("name=InventoryDBEntities1")
+        public InventoryDBEntities()
+            : base("name=InventoryDBEntities")
         {
         }
     
@@ -60,56 +60,6 @@ namespace AdvMasterDetails
                 new ObjectParameter("Qnt", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("sp_ProductAvailibility", fromDParameter, toDParameter, prodIdParameter, statusParameter, qntParameter);
-        }
-    
-        public virtual ObjectResult<OrderDetail> ProductAvailibility(string fromD, string toD, Nullable<int> prodId, string status, Nullable<int> qnt)
-        {
-            var fromDParameter = fromD != null ?
-                new ObjectParameter("FromD", fromD) :
-                new ObjectParameter("FromD", typeof(string));
-    
-            var toDParameter = toD != null ?
-                new ObjectParameter("ToD", toD) :
-                new ObjectParameter("ToD", typeof(string));
-    
-            var prodIdParameter = prodId.HasValue ?
-                new ObjectParameter("ProdId", prodId) :
-                new ObjectParameter("ProdId", typeof(int));
-    
-            var statusParameter = status != null ?
-                new ObjectParameter("Status", status) :
-                new ObjectParameter("Status", typeof(string));
-    
-            var qntParameter = qnt.HasValue ?
-                new ObjectParameter("Qnt", qnt) :
-                new ObjectParameter("Qnt", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<OrderDetail>("ProductAvailibility", fromDParameter, toDParameter, prodIdParameter, statusParameter, qntParameter);
-        }
-    
-        public virtual ObjectResult<OrderDetail> ProductAvailibility(string fromD, string toD, Nullable<int> prodId, string status, Nullable<int> qnt, MergeOption mergeOption)
-        {
-            var fromDParameter = fromD != null ?
-                new ObjectParameter("FromD", fromD) :
-                new ObjectParameter("FromD", typeof(string));
-    
-            var toDParameter = toD != null ?
-                new ObjectParameter("ToD", toD) :
-                new ObjectParameter("ToD", typeof(string));
-    
-            var prodIdParameter = prodId.HasValue ?
-                new ObjectParameter("ProdId", prodId) :
-                new ObjectParameter("ProdId", typeof(int));
-    
-            var statusParameter = status != null ?
-                new ObjectParameter("Status", status) :
-                new ObjectParameter("Status", typeof(string));
-    
-            var qntParameter = qnt.HasValue ?
-                new ObjectParameter("Qnt", qnt) :
-                new ObjectParameter("Qnt", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<OrderDetail>("ProductAvailibility", mergeOption, fromDParameter, toDParameter, prodIdParameter, statusParameter, qntParameter);
         }
     }
 }

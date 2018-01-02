@@ -28,11 +28,12 @@ namespace AdvMasterDetails.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Login(AdvMasterDetails.Models.Login login, string ReturnUrl = "")
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(AdvMasterDetails.Models.LoginCred login, string ReturnUrl = "")
         {
             bool Status = false;
             string message = "";
-            using (InventoryDBEntities1 dc = new InventoryDBEntities1())
+            using (InventoryDBEntities dc = new InventoryDBEntities())
             {
                 if (IsEmailExist(login.Email))
                 {
@@ -124,7 +125,7 @@ namespace AdvMasterDetails.Controllers
                 user.SecretKey = Guid.NewGuid();
                 #endregion
                 #region Save Data to Database
-                using (InventoryDBEntities1 dc = new InventoryDBEntities1())
+                using (InventoryDBEntities dc = new InventoryDBEntities())
                 {
                     dc.UserLogins.Add(user);
                     try
@@ -173,7 +174,7 @@ namespace AdvMasterDetails.Controllers
         [NonAction]
         public bool IsEmailExist(string emailID)
         {
-            using (InventoryDBEntities1 de = new InventoryDBEntities1())
+            using (InventoryDBEntities de = new InventoryDBEntities())
             {
                 var EC = de.UserLogins.Where(a => a.Email == emailID).FirstOrDefault();
                 return EC != null;// if not equal to null means True

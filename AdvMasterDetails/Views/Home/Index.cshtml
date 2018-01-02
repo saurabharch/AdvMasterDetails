@@ -33,7 +33,7 @@
             <tr class="col-md-12">
                 <td class="col-md-2">@*<i class="fa fa-building-o" aria-hidden="true"></i>*@🏢 Orgnisation</td>
                 <td class="col-md-10" style="padding-left:8px;width:925px;">
-                    <input id="company" class="form-control" placeholder="Orgnisation / Company Name" />
+                    <input id="company" class="form-control" placeholder="Orgnisation / Company Name"  style="text-transform:uppercase" />
                     <span class="error">Orgnisation/Company Name required</span>
                 </td>
             </tr>
@@ -112,6 +112,7 @@
 </div>
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+@section Scripts{
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script src="~/Scripts/myScripts.js"></script>
 <script type="text/javascript">
@@ -174,6 +175,7 @@
 
     document.getElementById('orderDate').value = today;
 </script>
+    }
 <style>
     span.error{
         display:block;

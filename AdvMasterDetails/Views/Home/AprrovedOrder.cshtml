@@ -59,12 +59,70 @@
         </div>
         <!-- /.row -->
     </section>
+<div class="modal fade" id="createAssetModal" tabindex="-1" role="dialog" aria-labelledby="CreateAssetModal" aria-hidden="true" data-backdrop="static">
+    <div class="model-dialog" role="document">
+        <div class="model-content">
+            <div class="model-header">
+                <h5 class="model-title" id="createAssetModel">Order Sheet</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+               
+                <section class="content">
+                    <div class="row">
+
+                        <div class="col-xs-6">
+                            <!-- /.box -->
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Order Items</h3>
+                                </div>
+                                <button type="button" class="close" data-dismiss="modal" aria-dismiss="modal" aria-label="Close" ">
+                                    <span aria-hidden="true" style="padding:20px;font-size:30px;">&times;</span>
+                                </button>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="box-header">
+                                        <h3 class="box-title"></h3>
+                                    </div>
+                                    
+                                    @*<a onclick="GetTeams(true)" class="btn btn-success" style="margin:5px;">Approved</a>
+                        <a onclick="GetTeams(false)" class="btn btn-warning">Un-Approved</a>*@
+                                    <table id="OrderSheet" cellspacing="0" width="100%" class="display table table-bordered table-striped">
+
+
+                                        @*@*<th width="8%" style="background-color:#333;color:whitesmoke;width:8%;text-align:center;">Sr No.</th>
+                            <th width="20%" style="background-color:#333;color:whitesmoke;width:12%;">Product Name</th>
+                            <th width="20%" style="background-color:#333;color:whitesmoke;width:15%;">Quantity</th>
+                            <th width="20%" style="background-color:#333;color:whitesmoke;width:15%;">Status</th>
+                            <th width="20%" style="background-color:#333;color:whitesmoke;width:15%;">Remarks</th>
+                            <th width="20%" style="background-color:#333;color:whitesmoke;width:15%;">Action</th>*@
+                                        @*<th width="15%" style="background-color:#333;color:whitesmoke;width:15%;">Action</th>*@
+
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>  
     <!-- /.content -->
 <!-- /.content-wrapper -->
-<link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"  rel="stylesheet"/>
+<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
+<link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
 @*<script src="~/Scripts/datatable/jquery.dataTables.min.js"></script>*@
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.2/css/buttons.dataTables.min.css" />
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.3/css/select.dataTables.min.css" />
+
+
 @*<link href="~/Content/datatables.net/EditorDatatable/css/editor.bootstrap.min.css" rel="stylesheet" />*@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
 @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>*@
@@ -73,6 +131,9 @@
 <script src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js" type="text/javascript"></script>
 <script src="https://cdn.datatables.net/select/1.2.3/js/dataTables.select.min.js" type="text/javascript"></script>
 @*<script src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js" type="text/javascript"></script>*@
+@*<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>*@
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/jquery-ui.js" type="text/javascript"></script>
+
 <script language="javascript" type="text/javascript">
     var Popup, dataTable,chkinit;
     $(document).ready(function () {
@@ -88,8 +149,9 @@
             type: "Get",
             url: "/Home/ApprovedOrderList?check="+state,
             success: function (response) {
-             BindDataTable(response);
-             console.log(response);
+                BindDataTable(response);
+                
+             //console.log(response);
             }
         })
     }
@@ -108,25 +170,25 @@
                  {
                      "mData": "OrderNo",
                      "render": function FName(OrderNo, type, full, meta) {
-                         return '📋<a href="#" onclick="sendUpdate(' + full.OrderNo + ')" style="width:85px;padding-left:2px;">' + full.OrderNo + '</a>'
+                         return '📋 <a href="#" onclick="SendUpdate(' + full.OrderNo + ')" style="width:85px;padding-left:2px;" data-toggle="modal" data-url="@Url.Action("OrderProducts", "Home")?OrderNo=' + full.OrderNo + '" id="' + full.OrderNo + '">' + full.OrderNo + '</a>'
                      }
                  },
                 {
                     "mData": "OrderDate",
                     "render": function (OrderDate, type, full, meta) {
-                        return '<a href="#" style="font-size:11px;"><i class="glyphicon glyphicon-calendar" style="color:black;font-size:11px;"></i> ' + full.OrderDate+'</a>';
+                        return '<a href="#" style="font-size:11px;"><i class="glyphicon glyphicon-calendar" style="color:black;font-size:11px;"></i> ' + full.OrderDate + '</a>';
                     }
                 },
                  {
                      "mData": "FromDate",
                      "render": function (FromDate, type, full, meta) {
-                         return '⏰ <a href="#" style="font-size:12px;">' + full.FromDate+'</a>';
+                         return '⏰ <a href="#" style="font-size:12px;">' + full.FromDate + '</a>';
                      }
                  },
                   {
                       "mData": "ToDate",
                       "render": function (ToDate, type, full, meta) {
-                          return '⏰ <a href="#" style="font-size:12px;">' + full.ToDate+'</a>';
+                          return '⏰ <a href="#" style="font-size:12px;">' + full.ToDate + '</a>';
                       }
                   },
                    {
@@ -144,13 +206,13 @@
                    {
                        "mData": "Company",
                        "render": function (Company, type, full, meta) {
-                           return '🏢 <p style="font-size:12px;">' + full.Company+'</a>';
+                           return '🏢 <p style="font-size:12px;">' + full.Company + '</a>';
                        }
                    },
                     {
                         "mData": "OrderNo",
                         "render": function (OrderNo, type, full, meta) {
-                            var Guid=full.GUID;
+                            var Guid = full.GUID;
                             if (full.AdminApproved) {
                                 return '<a class="btn btn-default" href="@Url.Action("OrderStatus", "Home")?id=' + Guid + '" OnClick="#" style="width:120px;padding-left:4px;margin-bottom:5px;"><i> 🚚 </i>  Ready to Transit</a> <a class="btn btn-danger" href="@Url.Action("OrderCancel", "Home")?id=' + Guid + '" onclick="Delete("' + full.GUID + '")"><i class="glyphicon glyphicon-trash"></i> Cancel Order</a>'
                             }
@@ -171,11 +233,133 @@
                 "emptyTable": "No Data found , Please click on <b> Register New<b> Button",
             },
 
+        }).columns.adjust()
+        $("#checkAll").click(function () {
+            $(".checkitem").prop('checked',
+                $(this).prop('checked'));
+        })
+
+       
+    }
+    var SendUpdate = function (OrderNo) {
+        $(function () {
+            //$("#createAssetContainer").dialog({
+            //    autoOpen: false,
+            //    modal: true,
+            //    title: "View Details"
+            //})
+            $.ajax({
+                type: "POST",
+                url: "/Home/OrderProducts?OrderNo="+OrderNo,
+                //data: '{OrderNo: "' + OrderNo + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    console.log(response);
+                    //$('#createAssetContainer').on('shown.bs.modal', function () {
+                    //    $('#myInput').trigger('focus')
+                    //})
+                    $('#createAssetContainer').html(response);
+                    //$('#createAssetContainer').dialog('open');
+                    $('#createAssetModal').modal('show');
+                    BindOrders(response);
+                },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                alert(response.responseText);
+            }
+            })
+        });
+     }
+    var BindOrders = function (response) {
+        $('#OrderSheet').DataTable({
+            "title": "Order Sheet",
+            "paging": true,
+            "bDestroy": true,
+            "selecting": true,
+            "multiselect": true,
+            "processing": true,
+            "scrollX": true,
+            "aaData": response,
+            "responsive": true,
+            "aoColumns": [
+                {
+                    "sTitle": "Serial No.",
+                    "mData": "prodID",
+                    "render": function (prodID, type, full, meta) {
+                        return '<a href="#" style="font-size:11px;">' + full.prodID + '</a>';
+                    }
+                },
+                 {
+                     "sTitle": "Product Name",
+                     "mData": "prodName",
+                     "render": function (prodName, type, full, meta) {
+                         return '<a href="#" style="font-size:12px;">' + full.prodName + '</a>';
+                     }
+                 },
+                 {
+                     "sTitle": "Product Quantity",
+                     "mData": "prodQuantity",
+                     "render": function (prodQuantity, type, full, meta) {
+                         return '<a style="font-size:12px;"> ' + full.prodQuantity + '</a>'
+                     }
+                 },
+                   {
+                       "sTitle": "Remarks",
+                       "mData": "prodRemarks",
+                       "render": function (prodRemarks, type, full, meta) {
+                           return '<a href="#" style="font-size:10px;">' + full.prodRemarks + '</a>';
+                       }
+                   },
+                    {
+                        "sTitle": "Status",
+                        "mData": "prodState",
+                        "render": function (prodState, type, full, meta) {
+                            return '<a href="#" style="font-size:10px;">' + full.prodState + '</a>';
+                        }
+                    },
+                   {
+                       "sTitle": "Action",
+                       "mData": "gid",
+                       "render": function (gid, type, full, meta) {
+                           @*var Guid = full.gid;
+                           if (full.AdminApproved) {
+                               @*return '<a class="btn btn-default" href="@Url.Action("OrderStatus", "Home")?id=' + Guid + '" OnClick="#" style="width:120px;padding-left:4px;margin-bottom:5px;"><i> 🚚 </i>  Ready to Transit</a> <a class="btn btn-danger" href="@Url.Action("OrderCancel", "Home")?id=' + Guid + '" onclick="Delete("' + full.GUID + '")"><i class="glyphicon glyphicon-trash"></i> Cancel Order</a>
+                           }
+                           else {
+                               @return '<a class="btn btn-default" href="@Url.Action("ApprovedOrder", "Home")?id=' + Guid + '" OnClick="#" style="width:120px;padding-left:4px;margin-bottom:5px;"><i> 🚚 </i>  Approve Order</a> <a class="btn btn-danger" href="@Url.Action("OrderCancel", "Home")?id=' + Guid + '" onclick="Delete("' + full.GUID + '")"><i class="glyphicon glyphicon-trash"></i> Cancel Order</a>'
+                           }*@
+                           return '<a class="btn btn-primary" id="' + gid + '"><i class="glyphicon glyphicon-pencil"></i>  Edit<a>'
+                       },
+                       "orderable": true,
+                       "searchable": true,
+                       "width": "auto",
+                   },
+            ],
+            "select": {
+                "style": 'os',
+                "selector": 'td:first-child'
+            },
+            "language": {
+                "emptyTable": "No Data found , Please click on <b> Register New<b> Button",
+            },
+
         })
         $("#checkAll").click(function () {
             $(".checkitem").prop('checked',
                 $(this).prop('checked'));
         });
+
+        //var url = "/Home/OrderProducts?OrderNo=" + OrderNo;
+
+        //$.get(url, function (data) {
+        //    console.log(data);
+
+         
+        //});
+       
     }
 </script>
 @*<script>
@@ -248,4 +432,90 @@
             ]
         });
     });
+</script>*@
+
+@*<script language="javascript" type="text/javascript">
+    var GetTeams = function (state) {
+        $.ajax({
+            type: "Get",
+            url: "/Home/OrderProducts?OrderNo=" + state,
+            success: function (response) {
+             BindDataTable(response);
+             console.log(response);
+            }
+        })
+    }
+
+    var BindDataTable = function (response) {
+        $('#OrderSheet').DataTable({
+            "title": "Order Sheet",
+            "paging": true,
+            "bDestroy": true,
+            "selecting": true,
+            "multiselect": true,
+            "processing": true,
+            "scrollX": true,
+            "aaData": response,
+            "aoColumns": [
+                 {
+                     "mData": "Sr No.",
+                     "render": function FName(OrderNo, type, full, meta) {
+                         return ;
+                     }
+                 },
+                {
+                    "mData": "ProductID",
+                    "render": function (ProductID, type, full, meta) {
+                        return '<a href="#" style="font-size:11px;"><i class="glyphicon glyphicon-calendar" style="color:black;font-size:11px;"></i> ' + full.ProductID+'</a>';
+                    }
+                },
+                 {
+                     "mData": "Quantity",
+                     "render": function (Quantity, type, full, meta) {
+                         return '⏰ <a href="#" style="font-size:12px;">' + full.Quantity+'</a>';
+                     }
+                 },
+                 {
+                       "mData": "Status",
+                       "render": function (Status, type, full, meta) {
+                           return '<p style="font-size:12px;"><i class="glyphicon glyphicon-pencil" style="color:black;font-size:10px;"></i> ' + full.Status + '</p>'
+                       }
+                   },
+                   {
+                       "mData": "Remarks",
+                       "render": function (Remarks, type, full, meta) {
+                           return '📞<a href="#" style="font-size:10px;">' + full.ContactNo + '</a><br/><a href="#" style="font-size:10px;">' + full.Remarks + '</a>';
+                       }
+                   },
+                   {
+                        "mData": "GUID",
+                        "render": function (OrderNo, type, full, meta) {
+                            var Guid=full.GUID;
+                            if (full.AdminApproved) {
+                                return '<a class="btn btn-default" href="@Url.Action("OrderStatus", "Home")?id=' + Guid + '" OnClick="#" style="width:120px;padding-left:4px;margin-bottom:5px;"><i> 🚚 </i>  Ready to Transit</a> <a class="btn btn-danger" href="@Url.Action("OrderCancel", "Home")?id=' + Guid + '" onclick="Delete("' + full.GUID + '")"><i class="glyphicon glyphicon-trash"></i> Cancel Order</a>'
+                            }
+                            else {
+                                return '<a class="btn btn-default" href="@Url.Action("ApprovedOrder", "Home")?id=' + Guid + '" OnClick="#" style="width:120px;padding-left:4px;margin-bottom:5px;"><i> 🚚 </i>  Approve Order</a> <a class="btn btn-danger" href="@Url.Action("OrderCancel", "Home")?id=' + Guid + '" onclick="Delete("' + full.GUID + '")"><i class="glyphicon glyphicon-trash"></i> Cancel Order</a>'
+                            }
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "auto",
+                    },
+            ],
+            "select": {
+                "style": 'os',
+                "selector": 'td:first-child'
+            },
+            "language": {
+                "emptyTable": "No Data found , Please click on <b> Register New<b> Button",
+            },
+
+        })
+        $("#checkAll").click(function () {
+            $(".checkitem").prop('checked',
+                $(this).prop('checked'));
+        });
+
+    }
 </script>*@

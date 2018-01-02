@@ -1,17 +1,17 @@
 ﻿
 @{
-    ViewBag.Title = "Checking Product Availiblity";
-    Layout = "~/Views/Shared/_Dashboard.cshtml";
+    ViewBag.Title = "Checking Product Availability";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <section class="content-header">
     <h1>
-        Availibility
-        <small>Items Availibility</small>
+        Availability
+        <small>Items Availability</small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Tables</a></li>
-        <li class="active">Check Availibility</li>
+        <li><a href="~/Home/AprrovedOrder"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="~/Home/AprrovedOrder">Dashboard</a></li>
+        <li class="active">Check Availability</li>
     </ol>
 </section>
 <section class="content">
@@ -71,7 +71,7 @@
                                         <span class="error">Select Product</span>
                                     </td>
                                     <td>
-                                        <input type="text" id="quantity" class="quantity form-control" placeholder="Only Numeric Allowed" />
+                                        <input type="text" id="quantity" class="quantity form-control" placeholder="Only Numeric Allowed" onchange="LoadProductavl()"/>
                                         <span class="error">Valid quantity required</span>
                                     </td>
                                     @*<td>
@@ -79,6 +79,7 @@
                                 <span class="error">Valid rate required</span>
                             </td>*@
                                     <td>
+                                        <span id="orderItemBadge" class="badge badge-pill badge-default">0</span>
                                         <input type="button" id="add" value="➕ Add  " style="width:100px;" class="btn btn-success" />
                                     </td>
                                 </tr>
@@ -86,9 +87,10 @@
                             <div id="orderItems" style="margin-left:8px;">
                                 <table class="table table-responsive" id="orderdetailsItems"></table>
                                 <span id="orderItemError" style="color:red"></span>
+                               
                             </div>
                             <div style="padding:10px 10px; text-align:right">
-                                <input id="submit" type="button" value="🔍 Check Availibility" class="btn btn-success" style="padding:10px 20px" />
+                                @*<input id="submit" type="button" value="🔍 Check Availability" class="btn btn-success" style="padding:10px 20px" />*@
                             </div>
                         </div>
                  
@@ -105,6 +107,7 @@
 <!-- /.content-wrapper -->
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+@section Scripts{
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script src="~/Scripts/CheckingScript.js"></script>
 <script type="text/javascript">
@@ -367,13 +370,20 @@
   
    
 </script>*@
-
+}
 <style>
     span.error {
         display: block;
         visibility: hidden;
         color: red;
         font-size: 90%;
+    }
+
+    .badge-success{
+        background-color:#4b9c31;
+    }
+    .badge-danger{
+        background-color:#d81919;
     }
 
     tr.error {

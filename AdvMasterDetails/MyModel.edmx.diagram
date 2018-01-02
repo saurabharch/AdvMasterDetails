@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="76bfb207679f4cc0958dcbd55f913b5a" Name="Diagram1" ZoomLevel="93">
+      <Diagram DiagramId="ab172aaadc6244f3bbe5e1083ce8b399" Name="Diagram1">
         <EntityTypeShape EntityType="InventoryDBModel.Category" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="InventoryDBModel.Option" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="InventoryDBModel.OrderDetail" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
@@ -13,9 +13,9 @@
         <EntityTypeShape EntityType="InventoryDBModel.Remark" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="InventoryDBModel.RemarksTable" Width="1.5" PointX="5.25" PointY="1.625" IsExpanded="true" />
         <EntityTypeShape EntityType="InventoryDBModel.Status" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="InventoryDBModel.UserLogin" Width="1.5" PointX="4.75" PointY="7.75" IsExpanded="true" />
         <AssociationConnector Association="InventoryDBModel.FK_OrderDetails_MasterOrder" ManuallyRouted="false" />
         <AssociationConnector Association="InventoryDBModel.FK_RemarksTable_OrderDetails" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="InventoryDBModel.UserLogin" Width="1.5" PointX="5.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

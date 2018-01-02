@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="InventoryDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="InventoryDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Categories">
           <Key>
             <PropertyRef Name="CategoryID" />
@@ -86,20 +86,16 @@
           <Property Name="StatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="OptionStatus" Type="nvarchar" MaxLength="30" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'InventoryDB.dbo.UserLogin' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="UserLogin">
           <Key>
             <PropertyRef Name="ID" />
-            <PropertyRef Name="Email" />
-            <PropertyRef Name="Password" />
-            <PropertyRef Name="SecretKey" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Email" Type="nvarchar" MaxLength="250" Nullable="false" />
           <Property Name="Password" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="SecretKey" Type="uniqueidentifier" Nullable="false" />
           <Property Name="AdminType" Type="bit" />
+          <Property Name="GlobalID" Type="uniqueidentifier" />
         </EntityType>
         <Association Name="FK_OrderDetails_MasterOrder">
           <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="1" />
@@ -141,15 +137,7 @@ warning 6002: The table/view 'InventoryDB.dbo.UserLogin' does not have a primary
           <EntitySet Name="Remark" EntityType="Self.Remark" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RemarksTable" EntityType="Self.RemarksTable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UserLogin" EntityType="Self.UserLogin" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [UserLogin].[ID] AS [ID], 
-    [UserLogin].[Email] AS [Email], 
-    [UserLogin].[Password] AS [Password], 
-    [UserLogin].[SecretKey] AS [SecretKey], 
-    [UserLogin].[AdminType] AS [AdminType]
-    FROM [dbo].[UserLogin] AS [UserLogin]</DefiningQuery>
-          </EntitySet>
+          <EntitySet Name="UserLogin" EntityType="Self.UserLogin" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_OrderDetails_MasterOrder" Association="Self.FK_OrderDetails_MasterOrder">
             <End Role="OrderMaster" EntitySet="OrderMaster" />
             <End Role="OrderDetails" EntitySet="OrderDetails" />
@@ -248,6 +236,17 @@ warning 6002: The table/view 'InventoryDB.dbo.UserLogin' does not have a primary
           <Property Name="StatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="OptionStatus" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
+        <EntityType Name="UserLogin">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SecretKey" Type="Guid" Nullable="false" />
+          <Property Name="AdminType" Type="Boolean" />
+          <Property Name="GlobalID" Type="Guid" />
+        </EntityType>
         <Association Name="FK_OrderDetails_MasterOrder">
           <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="1" />
           <End Role="OrderDetails" Type="Self.OrderDetail" Multiplicity="*" />
@@ -272,7 +271,7 @@ warning 6002: The table/view 'InventoryDB.dbo.UserLogin' does not have a primary
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="InventoryDBEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="InventoryDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Options" EntityType="Self.Option" />
           <EntitySet Name="OrderDetails" EntityType="Self.OrderDetail" />
@@ -281,6 +280,7 @@ warning 6002: The table/view 'InventoryDB.dbo.UserLogin' does not have a primary
           <EntitySet Name="Remarks" EntityType="Self.Remark" />
           <EntitySet Name="RemarksTables" EntityType="Self.RemarksTable" />
           <EntitySet Name="Status" EntityType="Self.Status" />
+          <EntitySet Name="UserLogins" EntityType="Self.UserLogin" />
           <AssociationSet Name="FK_OrderDetails_MasterOrder" Association="Self.FK_OrderDetails_MasterOrder">
             <End Role="OrderMaster" EntitySet="OrderMasters" />
             <End Role="OrderDetails" EntitySet="OrderDetails" />
@@ -296,34 +296,13 @@ warning 6002: The table/view 'InventoryDB.dbo.UserLogin' does not have a primary
             <Parameter Name="Status" Mode="In" Type="String" />
             <Parameter Name="Qnt" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="ProductAvailibility" EntitySet="OrderDetails" ReturnType="Collection(InventoryDBModel.OrderDetail)">
-            <Parameter Name="FromD" Mode="In" Type="String" />
-            <Parameter Name="ToD" Mode="In" Type="String" />
-            <Parameter Name="ProdId" Mode="In" Type="Int32" />
-            <Parameter Name="Status" Mode="In" Type="String" />
-            <Parameter Name="Qnt" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <EntitySet Name="UserLogins" EntityType="InventoryDBModel.UserLogin" />
         </EntityContainer>
-        <EntityType Name="UserLogin">
-          <Key>
-            <PropertyRef Name="ID" />
-            <PropertyRef Name="Email" />
-            <PropertyRef Name="Password" />
-            <PropertyRef Name="SecretKey" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Email" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="SecretKey" Type="Guid" Nullable="false" />
-          <Property Name="AdminType" Type="Boolean" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="InventoryDBModelStoreContainer" CdmEntityContainer="InventoryDBEntities1">
+        <EntityContainerMapping StorageEntityContainer="InventoryDBModelStoreContainer" CdmEntityContainer="InventoryDBEntities">
           <EntitySetMapping Name="Categories">
             <EntityTypeMapping TypeName="InventoryDBModel.Category">
               <MappingFragment StoreEntitySet="Categories">
@@ -413,19 +392,19 @@ warning 6002: The table/view 'InventoryDB.dbo.UserLogin' does not have a primary
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="sp_ProductAvailibility" FunctionName="InventoryDBModel.Store.sp_ProductAvailibility" />
-          <FunctionImportMapping FunctionImportName="ProductAvailibility" FunctionName="InventoryDBModel.Store.sp_ProductAvailibility" />
           <EntitySetMapping Name="UserLogins">
             <EntityTypeMapping TypeName="InventoryDBModel.UserLogin">
               <MappingFragment StoreEntitySet="UserLogin">
-                <ScalarProperty Name="AdminType" ColumnName="AdminType" />
-                <ScalarProperty Name="SecretKey" ColumnName="SecretKey" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="GlobalID" ColumnName="GlobalID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="SecretKey" ColumnName="SecretKey" />
+                <ScalarProperty Name="AdminType" ColumnName="AdminType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_ProductAvailibility" FunctionName="InventoryDBModel.Store.sp_ProductAvailibility" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

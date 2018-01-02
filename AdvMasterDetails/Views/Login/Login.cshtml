@@ -1,4 +1,4 @@
-﻿@model AdvMasterDetails.Models.Login
+﻿@model AdvMasterDetails.Models.LoginCred
 
 @{
     ViewBag.Title = "Login";
@@ -31,12 +31,12 @@
                             <div class="page-head-title wow fadeInDown" style="visibility: visible; animation-name: fadeInDown;">
                                 <img class="smaller-image thick-green-border" style="background-color:black;" src="~/Content/img/PromaxLogo_64.png" alt="Promax_logo"><hr />
                                 <div class="title-area">
-                                    <h2 class="title">ADMIN<span> LOGIN</span></h2>
+                                    <h2 class="title" style="margin-bottom:30px;">ADMIN<span> LOGIN</span></h2>
                                 </div><hr />
 
                                 <div class="head-content">
 
-                                    <div class="form-group" style="">
+                                    <div class="form-group">
 
                                         @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email Id" } })
                                         @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })<br />
@@ -44,10 +44,18 @@
                                         @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group">
-                                        <input type="submit" value="Login" class="btn btn-sm btn-pink" />
-                                        <a href="@Url.Action("Login","Login")" title="Back to Login"><i class="glyphicon glyphicon-arrow-left"></i> Back to home</a>
+                                        <div class="col-sm-6">
+                                            <input type="submit" value="Login" class="btn btn-pink" />
+                                        </div>
+                                        <div class="col-sm-6" style="margin-top:25px;">
+                                            <a href="@Url.Action("Forget","PassReset")">Forget your Password ?</a>
+                                        </div>
                                     </div>
-
+                                    <div class="form-group">
+                                       <div class="col-sm-12">
+                                           <a href="@Url.Action("Login","Login")" title="Back to Login"><i class="glyphicon glyphicon-arrow-left"></i> Back to home</a>
+                                       </div>
+                                    </div>
                                 </div>
 
                             </div>

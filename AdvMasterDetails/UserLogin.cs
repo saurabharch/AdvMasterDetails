@@ -19,5 +19,6 @@ namespace AdvMasterDetails
         public string Password { get; set; }
         public System.Guid SecretKey { get; set; }
         public Nullable<bool> AdminType { get; set; }
+        public System.Guid GlobalID { get; set; }
     }
 }

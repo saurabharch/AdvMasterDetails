@@ -62,6 +62,59 @@ function LoadProduct(categoryDD) {
         }
     })
 }
+
+function LoadProductavl() {
+    var data = [];
+    var fmdt = getFdate();
+    var tmdt = getTdate();
+    var productid = $('#product').val();
+    var quantity = $('#quantity').val();
+    var isThisValid = true;
+    var ItemCount = [];
+    $('#orderItemError').text('');
+    var list = [];
+    var errorItemCount = 0;
+    if ($('#FromDate').val().trim() == '') {
+        $('#FromDate').siblings('span.error').css('visibility', 'visible');
+        isThisValid = false;
+    }
+    else {
+        $('#FromDate').siblings('span.error').css('visibility', 'hidden');
+    }
+    if ($('#ToDate').val().trim() == '') {
+        $('#ToDate').siblings('span.error').css('visibility', 'visible');
+        isThisValid = false;
+    }
+    else {
+        $('#ToDate').siblings('span.error').css('visibility', 'hidden');
+    }
+    if (isThisValid) {
+        $.ajax({
+            context: $(this),
+            type: 'POST',
+            url: '/home/ProdCheckAvailiblity?fromDate=' + fmdt + '&ToDate=' + tmdt + '&ProdId=' + productid + '&state=Aprroved%20-%20Package&Quantity=' + quantity,
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (data) {
+
+                $("#orderItemBadge").html(data.AVProdCount);
+                if (data.AVProdCount >= quantity) {
+                    $("#orderItemBadge").addClass('badge-success').removeClass('badge-danger badge-default');
+                }
+                else {
+                    $("#orderItemBadge").addClass('badge-danger').removeClass('badge-success badge-default');
+                }
+            },
+            error: function (error) {
+                console.log(error);
+               
+            }
+        })
+    }
+
+
+}
+
 function getFdate() {
     var date = $('#FromDate').val().trim();
     return date;
@@ -75,8 +128,9 @@ function getTdate() {
 
 $(document).ready(function () {
     //Add button click event
+    var counter = 1;
     $('#add').click(function () {
-        //validation and add order items
+        counter += 1;
         var isAllValid = true;
         if ($('#productCategory').val() == "0") {
             isAllValid = false;
@@ -106,12 +160,18 @@ $(document).ready(function () {
             var $newRow = $('#mainrow').clone().removeAttr('id');
             $('.pc', $newRow).val($('#productCategory').val());
             $('.product', $newRow).val($('#product').val());
-
             //Replace add button with remove button
             $('#add', $newRow).addClass('remove').val('⛔ Remove').removeClass('btn-success');
+            var $badge = $(this).find('.badge'),
+                     count = Number($badge.text());
+            
+            $("#orderItemBadge").html(0);
+            
             $('.remove').width('100px');
             //remove id attribute from new clone row
             $('#productCategory,#product,#quantity,#add', $newRow).removeAttr('id');
+            $badge.addClass('.bagde-success').removeClass('.badge-default');
+            // $badge.atrr('id', counter);
             $('span.error', $newRow).remove();
             //append clone row
             $('#orderdetailsItems').append($newRow);
@@ -120,7 +180,9 @@ $(document).ready(function () {
             $('#productCategory,#product').val('0');
             $('#quantity').val('');
             $('#orderItemError').empty();
+
         }
+
 
     })
     //remove button click event
@@ -128,104 +190,134 @@ $(document).ready(function () {
         $(this).parents('tr').remove();
     });
 
-    $('#submit').click(function () {
-        var isAllValid = true;
+    //$('#submit').click(function () {
+    //    var isAllValid = true;
+    //    var ItemCount = [];
+    //    $('#orderItemError').text('');
+    //    var list = [];
+    //    var errorItemCount = 0;
+    //    $('#orderdetailsItems tbody tr').each(function (index, ele) {
+    //        if (
+    //            $('select.product', this).val() == "0" ||
+    //            (parseInt($('.quantity', this).val()) || 0) == 0
+    //            ) {
+    //            errorItemCount++;
+    //            $(this).addClass('error');
+    //        } else {
+    //            var orderItem = {
+    //                ProductID: $('select .product', this).val(),
+    //                Quantity: parseInt($('.quantity', this).val()),
+    //                FromDate: getFdate(),
+    //                ToDate: getTdate()
+    //            }
+    //            list.push(orderItem);
+    //        }
+    //    })
 
-        //validate order items
-        $('#orderItemError').text('');
-        var list = [];
-        var errorItemCount = 0;
-        $('#orderdetailsItems tbody tr').each(function (index, ele) {
-            if (
-                $('select.product', this).val() == "0" ||
-                (parseInt($('.quantity', this).val()) || 0) == 0
-                ) {
-                errorItemCount++;
-                $(this).addClass('error');
-            } else {
-                var orderItem = {
-                    ProductID: $('select.product', this).val(),
-                    Quantity: parseInt($('.quantity', this).val()),
-                    FromDate: getFdate(),
-                    ToDate: getTdate(),
-                }
-                list.push(orderItem);
-            }
-        })
+    //    if (errorItemCount > 0) {
+    //        $('#orderItemError').text(errorItemCount + " invalid entry in order item list.");
+    //        isAllValid = false;
+    //    }
 
-        if (errorItemCount > 0) {
-            $('#orderItemError').text(errorItemCount + " invalid entry in order item list.");
-            isAllValid = false;
-        }
+    //    if (list.length == 0) {
+    //        $('#orderItemError').text('At least 1 order item required.');
+    //        isAllValid = false;
+    //    }
+    //    if ($('#FromDate').val().trim() == '') {
+    //        $('#FromDate').siblings('span.error').css('visibility', 'visible');
+    //        isAllValid = false;
+    //    }
+    //    else {
+    //        $('#FromDate').siblings('span.error').css('visibility', 'hidden');
+    //    }
+    //    if ($('#ToDate').val().trim() == '') {
+    //        $('#ToDate').siblings('span.error').css('visibility', 'visible');
+    //        isAllValid = false;
+    //    }
+    //    else {
+    //        $('#ToDate').siblings('span.error').css('visibility', 'hidden');
+    //    }
 
-        if (list.length == 0) {
-            $('#orderItemError').text('At least 1 order item required.');
-            isAllValid = false;
-        }
-        if ($('#FromDate').val().trim() == '') {
-            $('#FromDate').siblings('span.error').css('visibility', 'visible');
-            isAllValid = false;
-        }
-        else {
-            $('#FromDate').siblings('span.error').css('visibility', 'hidden');
-        }
-        if ($('#ToDate').val().trim() == '') {
-            $('#ToDate').siblings('span.error').css('visibility', 'visible');
-            isAllValid = false;
-        }
-        else {
-            $('#ToDate').siblings('span.error').css('visibility', 'hidden');
-        }
+    //    if (isAllValid) {
+    //        var data = {
+    //            OrderDetails: list
+    //        }
 
-        if (isAllValid) {
-            var data = {
-                OrderDetails: list
-            }
+    //        $(this).val('Please wait...');
+    //        var FromDate = getFdate();
+    //        var ToDate = getTdate();
+    //        //var ProductID = 35;
+    //        //var Quantity = 2;
+    //        var States = "Approved - Package";
 
-            $(this).val('Please wait...');
-            var  FromDate= getFdate();
-            var ToDate = getTdate();
-            //var ProductID = 35;
-            //var Quantity = 2;
-            var States = "Approved - Package";
-            //var ProductID = $('select.product', this).val();
-            //var Quantity = parseInt($('.quantity', this).val());
-            //** Example Link : http://localhost:47367/home/CheckAvailiblity?fromDate=17%20November%202017%2006:00%20am&ToDate=23%20November%202017%2009:00%20am&ProdId=35&state=Approved%20-%20Package&Quantity=3 **//
-            for (var i = 0; i < list.length - 1; i++) {
-                var createStringP = list.product[i];
-                var createStringQ = list.quantity[i];
-                $.ajax({
-                    type: 'GET',
-                    url: '/home/CheckAvailiblity?fromDate=' + FromDate + '&ToDate=' + ToDate + '&ProdId=' + createStringP + '&state=Aprroved%20-%20Package&Quantity=' + createStringQ,
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if (data.status) {
-                            alert(data.val);
-                            //here we will clear the form
-                           // list = [];
-                            //$('#FromDate', '#ToDate', '#product', '#quantity').val('');
-                            //$('#orderdetailsItems').empty();
-                            console.log(data.val);
-                        }
-                        else {
-                            console.log(data)
-                            alert('Error');
+    //        //var ProductID = $('select.product', this).val();
+    //        //var Quantity = parseInt($('.quantity', this).val());
+    //        var i = 0;
+    //        var labelValue = 0;
+    //        var promises = [];
+    //        //** Example Link : http://localhost:47367/home/CheckAvailiblity?fromDate=17%20November%202017%2006:00%20am&ToDate=23%20November%202017%2009:00%20am&ProdId=35&state=Approved%20-%20Package&Quantity=3 **//
+    //        for (i; i < list.length; i++) {
+    //            //var createStringP = list[i].ProductID;
+    //            //var createStringQ = list[i].Quantity;
+    //            //console.log(list[i]);
+    //            //var quantity = list[i].Quantity.val();
 
-                        }
-                        $('#submit').text('Check Availiblity');
-                        $(this).val('Availiblity');
-                    },
-                    error: function (error) {
-                        console.log(error);
-                        $('#submit').text('Check Availiblity');
-                    }
-                });
-            }
+    //            promises.push($.ajax({
+    //                context: $(this),
+    //                type: 'POST',
+    //                url: '/home/ProdCheckAvailiblity?fromDate=' + list[i].FromDate + '&ToDate=' + list[i].ToDate + '&ProdId=' + list[i].ProductID + '&state=Aprroved%20-%20Package&Quantity=' + list[i].Quantity,
+    //                data: JSON.stringify(data),
+    //                contentType: 'application/json',
+    //                success: function (data) {
+    //                    var getid = 1;
+    //                    for (var j = 0; j < 1; j++) {
 
-        
-        }
+    //                        var id = getid;
+    //                        //alert(data.AVProdCount);
+    //                        alert(id);
+    //                        //alert($("#1").html());
+    //                        $("#" + id).html(data.AVProdCount);
+    //                        getid += 1;
 
-    });
+
+    //                        console.log(data);
+    //                    }
+
+    //                    // }
+    //                    //else {
+    //                    //    console.log(response);
+
+    //                    ////$("#add").append("<span class='badge badge-pill badge-success'> - 2nd to last!</span>")
+    //                    //  alert('Error');
+
+    //                    //  }
+
+    //                    $('#submit').text('Check Availiblity');
+    //                    $(this).val('Availiblity');
+    //                },
+    //                error: function (error) {
+    //                    console.log(error);
+    //                    $('#submit').text('Check Availiblity');
+    //                }
+    //            }))
+    //        }
+    //        //console.log(ItemCount);
+    //        if (ItemCount.length > 0) {
+
+    //            //for (var h = 0; h <= ItemCount.length; h++) {
+    //            //    console.log(ItemCount[h].text);
+    //            //    var pCount=  parseInt($('.quantity', this).val());
+    //            //    if (ItemCount[h].val <= pCount)
+    //            //    {
+    //            //        $("#add").append("<span class='badge badge-pill badge-success'>"+ItemCount[h].text+"</span>")
+    //            //    }
+    //            //    else{
+    //            //        $("#add").append("<span class='badge badge-pill badge-danger'>" + ItemCount[h].text + "</span>")
+    //            //    }
+    //            //}
+    //        }
+    //    }
+
+    //});
 });
 LoadCategory($('#productCategory'));

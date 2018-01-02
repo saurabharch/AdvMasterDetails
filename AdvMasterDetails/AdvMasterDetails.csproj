@@ -1689,6 +1689,7 @@
     <Content Include="Content\plugins\timepicker\bootstrap-timepicker.js" />
     <Content Include="Content\plugins\timepicker\bootstrap-timepicker.min.css" />
     <Content Include="Content\plugins\timepicker\bootstrap-timepicker.min.js" />
+    <Content Include="Content\site.css" />
     <Content Include="Content\Style.css" />
     <Content Include="Content\tether\tether-theme-arrows-dark.css" />
     <Content Include="Content\tether\tether-theme-arrows-dark.min.css" />
@@ -1762,6 +1763,7 @@
     <Content Include="Content\bootstrap\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap\bootstrap.css.map" />
     <Content Include="Content\bootstrap\bootstrap.min.css.map" />
+    <Content Include="images\spacer-blue.png" />
     <Content Include="MyModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>MyModel.edmx</DependentUpon>
@@ -2249,6 +2251,7 @@
     </Compile>
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\PassResetController.cs" />
     <Compile Include="ExtendedModel\OrderMaster.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -2294,6 +2297,7 @@
     <Compile Include="UserLogin.cs">
       <DependentUpon>MyModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\OrderListItems.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -2312,6 +2316,9 @@
     <Content Include="Views\Home\CheckAvailiblity.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Login\AdminReg.cshtml" />
+    <Content Include="Views\Home\OrderProducts.cshtml" />
+    <Content Include="Views\PassReset\Forget.cshtml" />
+    <Content Include="Views\PassReset\ChangePassword.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

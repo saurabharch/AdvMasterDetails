@@ -1,6 +1,1 @@
-﻿Generated model file: MyModel.edmx.
-Loading metadata from the database took 00:00:06.6862105.
-Generating the model took 00:00:07.2132262.
-Generated model file: MyModel.edmx.
-Loading metadata from the database took 00:00:01.0512011.
-Generating the model took 00:00:02.5994069.
+﻿Format of the initialization string does not conform to specification starting at index 102.

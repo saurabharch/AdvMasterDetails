@@ -33,8 +33,7 @@ namespace AdvMasterDetails.Controllers
             }
         }
         [HttpGet]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ForgetPassChange(string id)
+        public ActionResult ForgetPassChange(string id)
         {
             bool Status = false;
             string message = "";
@@ -76,7 +75,7 @@ namespace AdvMasterDetails.Controllers
 
         Random rnd = new Random();
         [HttpPost]
-        public async Task<ActionResult> Forget(LoginCred user, string emailID, string activationcode, string oldpass)
+        public ActionResult Forget(LoginCred user, string emailID, string activationcode, string oldpass)
         {
             bool Status = false;
             string message = "";
@@ -134,7 +133,7 @@ namespace AdvMasterDetails.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ChangePassword(AdvMasterDetails.Models.LoginCred user, string emailID, string activationcode, string oldpass, string id)
+        public ActionResult ChangePassword(AdvMasterDetails.Models.LoginCred user, string emailID, string activationcode, string oldpass, string id)
         {
             bool status = false;
             string message = "";
@@ -177,7 +176,7 @@ namespace AdvMasterDetails.Controllers
         }
         string sendText;
         [NonAction]
-        public void  SendChangePassword(string emailID, string activationcode, string userpass)
+        public void SendChangePassword(string emailID, string activationcode, string userpass)
         {
             var verifyUrl = "/PassReset/ChangePassword/" + activationcode;
             var link = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, verifyUrl);

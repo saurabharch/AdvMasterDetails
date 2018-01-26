@@ -96,18 +96,6 @@
           <Property Name="SecretKey" Type="uniqueidentifier" Nullable="false" />
           <Property Name="AdminType" Type="bit" />
           <Property Name="GlobalID" Type="uniqueidentifier" />
-          <Property Name="SuperAdmin" Type="bit" />
-          <Property Name="ProfilePicPath" Type="nvarchar(max)" />
-          <Property Name="imgsrc" Type="image" />
-          <Property Name="Role" Type="nvarchar" MaxLength="50" />
-          <Property Name="contact" Type="nvarchar" MaxLength="12" />
-          <Property Name="State" Type="nvarchar" MaxLength="50" />
-          <Property Name="NotiyMsg" Type="nvarchar(max)" />
-          <Property Name="JoiningDate" Type="nvarchar" MaxLength="50" />
-          <Property Name="LastLoginTime" Type="nvarchar" MaxLength="50" />
-          <Property Name="AccountActive" Type="bit" />
-          <Property Name="OtpP" Type="numeric" Precision="6" Scale="0" />
-          <Property Name="UserName" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <Association Name="FK_OrderDetails_MasterOrder">
           <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="1" />
@@ -248,6 +236,17 @@
           <Property Name="StatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="OptionStatus" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
+        <EntityType Name="UserLogin">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SecretKey" Type="Guid" Nullable="false" />
+          <Property Name="AdminType" Type="Boolean" />
+          <Property Name="GlobalID" Type="Guid" />
+        </EntityType>
         <Association Name="FK_OrderDetails_MasterOrder">
           <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="1" />
           <End Role="OrderDetails" Type="Self.OrderDetail" Multiplicity="*" />
@@ -281,6 +280,7 @@
           <EntitySet Name="Remarks" EntityType="Self.Remark" />
           <EntitySet Name="RemarksTables" EntityType="Self.RemarksTable" />
           <EntitySet Name="Status" EntityType="Self.Status" />
+          <EntitySet Name="UserLogins" EntityType="Self.UserLogin" />
           <AssociationSet Name="FK_OrderDetails_MasterOrder" Association="Self.FK_OrderDetails_MasterOrder">
             <End Role="OrderMaster" EntitySet="OrderMasters" />
             <End Role="OrderDetails" EntitySet="OrderDetails" />
@@ -296,31 +296,7 @@
             <Parameter Name="Status" Mode="In" Type="String" />
             <Parameter Name="Qnt" Mode="In" Type="Int32" />
           </FunctionImport>
-          <EntitySet Name="UserLogins" EntityType="InventoryDBModel.UserLogin" />
         </EntityContainer>
-        <EntityType Name="UserLogin">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Email" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="SecretKey" Type="Guid" Nullable="false" />
-          <Property Name="AdminType" Type="Boolean" />
-          <Property Name="GlobalID" Type="Guid" />
-          <Property Name="SuperAdmin" Type="Boolean" />
-          <Property Name="ProfilePicPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="imgsrc" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="contact" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
-          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NotiyMsg" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="JoiningDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="LastLoginTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="AccountActive" Type="Boolean" />
-          <Property Name="OtpP" Type="Decimal" Precision="6" Scale="0" />
-          <Property Name="UserName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -416,31 +392,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="sp_ProductAvailibility" FunctionName="InventoryDBModel.Store.sp_ProductAvailibility" />
           <EntitySetMapping Name="UserLogins">
             <EntityTypeMapping TypeName="InventoryDBModel.UserLogin">
               <MappingFragment StoreEntitySet="UserLogin">
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="OtpP" ColumnName="OtpP" />
-                <ScalarProperty Name="AccountActive" ColumnName="AccountActive" />
-                <ScalarProperty Name="LastLoginTime" ColumnName="LastLoginTime" />
-                <ScalarProperty Name="JoiningDate" ColumnName="JoiningDate" />
-                <ScalarProperty Name="NotiyMsg" ColumnName="NotiyMsg" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="contact" ColumnName="contact" />
-                <ScalarProperty Name="Role" ColumnName="Role" />
-                <ScalarProperty Name="imgsrc" ColumnName="imgsrc" />
-                <ScalarProperty Name="ProfilePicPath" ColumnName="ProfilePicPath" />
-                <ScalarProperty Name="SuperAdmin" ColumnName="SuperAdmin" />
                 <ScalarProperty Name="GlobalID" ColumnName="GlobalID" />
-                <ScalarProperty Name="AdminType" ColumnName="AdminType" />
-                <ScalarProperty Name="SecretKey" ColumnName="SecretKey" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="SecretKey" ColumnName="SecretKey" />
+                <ScalarProperty Name="AdminType" ColumnName="AdminType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_ProductAvailibility" FunctionName="InventoryDBModel.Store.sp_ProductAvailibility" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

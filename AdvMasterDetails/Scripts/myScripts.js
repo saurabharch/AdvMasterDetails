@@ -82,10 +82,7 @@ function CurrentDateTime() {
     return d.getDate() + " " + days[d.getDay()] + " " + month[d.getMonth()] + " " + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
 }
 
-function gettoken() {
-    //var token = $('[name=__RequestVerificationToken]').val();
-    //return token;
-}
+
 $(document).ready(function () {
     //Add button click event
     $('#add').click(function () {
@@ -243,41 +240,33 @@ $(document).ready(function () {
             }
 
             $(this).val('Please wait...');
-            var verificationToken = $('[name=__RequestVerificationToken]').val();
+
             $.ajax({
                 type: 'POST',
-                headers: verificationToken,
                 url: '/home/save',
                 data: JSON.stringify(data),
-                cache: false,
-                async: true,
                 contentType: 'application/json',
                 success: function (data) {
                  if (data.status) {
-                       // alert('Successfully Placed Order');
+                        alert('Successfully Placed Order');
                         //here we will clear the form
-                     list = [];
-                     window.location.reload();
+                        list = [];
                         $('#orderNo,#orderDate,#Email', '#FromDate', '#ToDate', '#orderDate', '#phone', '#company').val('');
                         $('#orderdetailsItems').empty();
-                        $("#myModal").modal('show');
                     }
                     else {
                        // console.log(error)
-                      //  alert('Error');
+                        alert('Error');
                         
                     }
                     $('#submit').text('Save');
                     $(this).val('Save');
                 },
                 error: function (error) {
-                    $('#myModalError').modal('show');
+                    console.log(error);
                     $('#submit').text('Save');
                 }
             });
-        }
-        else {
-            $('#myModalError').modal('show');
         }
 
     });
@@ -285,4 +274,3 @@ $(document).ready(function () {
 });
 
 LoadCategory($('#productCategory'));
-

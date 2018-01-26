@@ -17,9 +17,6 @@
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "_CheckAvailable" }))
-{
-    @Html.AntiForgeryToken()
             <!-- /.box -->
             <div class="box">
                 <div class="box-header">
@@ -62,7 +59,7 @@
                                 </tr>
                                 <tr class="mycontainer" id="mainrow">
                                     <td>
-                                        <select id="productCategory" class="pc form-control" onblur="LoadProduct(this)">
+                                        <select id="productCategory" class="pc form-control" onchange="LoadProduct(this)">
                                             <option>Select</option>
                                         </select>
                                         <span class="error">Select Category</span>
@@ -98,7 +95,6 @@
                         </div>
                  
             </div>
-}
         </div>
         <!-- /.box-body -->
     </div>
@@ -112,10 +108,9 @@
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
 @section Scripts{
-
-@*<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>*@
-<script src="~/Scripts/CheckingScript.js" async></script>
-<script type="text/javascript" async>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="~/Scripts/CheckingScript.js"></script>
+<script type="text/javascript">
     $(document).ready(function () {
         $('.form_datetime').datetimepicker({
             //language:  'fr',

@@ -4,20 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>ProMax | Dashboard</title>
-    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!--Jquery 3.2.1-->
    <!-- <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>-->
-    <script src="~/Scripts/jquery-3.2.1.min.js" type="text/javascript" async></script>
-    
-    <script type="text/javascript" async>
-        if (typeof jQuery == 'undefined') {
-            
-            document.write(unescape("%3Cscript src='http://ajax.aspnetcdn.com/ajax/jquery/jquery-3.2.1.min.js' type='text/javascript'%3E%3C/script%3E"));
-        }
-    </script>
-
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
     <!-- Bootstrap 3.3.7 -->
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -555,7 +546,7 @@
             <div class="pull-right hidden-xs">
                 <b>Version</b> 2.4.2
             </div>
-            <strong>Copyright &copy; 2017-2018 <a href="http://promaxhdevents.com">ProMax Scientific Developers Pvt. Ltd</a>.</strong> All rights
+            <strong>Copyright &copy; 2017-2018 <a href="http://promaxhdevents.in">ProMax Scientific Developers Pvt. Ltd</a>.</strong> All rights
             reserved.
         </footer>
         <!-- Control Sidebar -->
@@ -734,8 +725,11 @@
     <script src="~/Scripts/bower_components/jquery/jquery.slim.min.js"></script>
     <script src="~/Scripts/bower_components/jquery/dist/jquery.min.js"></script>
     <!-- jQuery UI 1.11.4 -->
-    <script src="~/Scripts/bower_components/jquery-ui/jquery-ui.min.js" async></script>
-   
+    <script src="~/Scripts/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+  $.widget.bridge('uibutton', $.ui.button);
+    </script>
     <!-- Bootstrap 3.3.7 -->
     <script src="~/Scripts/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   
@@ -743,7 +737,6 @@
     <script src="~/Scripts/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
     <!-- jvectormap -->
     <script src="~/Scripts/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    
     <script src="~/Scripts/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
     <!-- jQuery Knob Chart -->
     <script src="~/Scripts/bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
@@ -762,19 +755,14 @@
     <!-- Slimscroll -->
     <script src="~/Scripts/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
     <!-- FastClick -->
-    <script src="~/Scripts/bower_components/fastclick/lib/fastclick.js" async></script>
+    <script src="~/Scripts/bower_components/fastclick/lib/fastclick.js"></script>
     <!-- AdminLTE App -->
     <script src="~/Scripts/dist/js/adminlte.min.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="~/Scripts/dist/js/pages/dashboard.js" async></script>
+    <script src="~/Scripts/dist/js/pages/dashboard.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="~/Scripts/dist/js/demo.js" async></script>
-    <script type="text/javascript" src="~/Script/app.js"></script>
+    <script src="~/Scripts/dist/js/demo.js"></script>
 @*<script src="~/Scripts/myScripts.js"></script>*@
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-    @*<script>
-  $.widget.bridge('uibutton', $.ui.button);
-    </script>*@
     @RenderSection("Scripts", required: false)
 </body>
 </html>

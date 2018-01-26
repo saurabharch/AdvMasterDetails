@@ -11,8 +11,7 @@ namespace AdvMasterDetails
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class OrderMaster
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -20,39 +19,20 @@ namespace AdvMasterDetails
         {
             this.OrderDetails = new HashSet<OrderDetail>();
         }
-
+    
         public int OrderID { get; set; }
         public string OrderNo { get; set; }
         public string OrderDate { get; set; }
-        [Display(Name = "Email")]
-        [DataType(DataType.EmailAddress)]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Email is Required")]
         public string Email { get; set; }
         public Nullable<System.Guid> GUID { get; set; }
-        [Display(Name = "From Date")]
-        [DataType(DataType.DateTime)]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Date is Required")]
         public string FromDate { get; set; }
-
-        [Display(Name = "To Date")]
-        [DataType(DataType.DateTime)]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Date is Required")]
         public string ToDate { get; set; }
         public Nullable<bool> AdminApproved { get; set; }
         public string Status { get; set; }
         public string Remarks { get; set; }
-
-        [Display(Name = "Contact")]
-        [DataType(DataType.PhoneNumber)]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Contact Number is Required")]
         public string ContactNo { get; set; }
-
-        [Display(Name = "Company Name")]
-        [MaxLength(50)]
-        [DataType(DataType.Text)]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Company Name is Required")]
         public string Company { get; set; }
-
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }

@@ -1,0 +1,66 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset=utf-8 />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='shortcut icon' type='image/x-icon' href='~/Content/images/fevicon.ico' />
+    <title>Promax Cloud Push Notification</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Material Design Theming -->
+    @*<link rel="stylesheet" href="Style.css">*@
+    <link href="~/matrial_content/materialStyle.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="~/matrial_content/material.min.js"></script>
+    <link href="~/matrial_content/main.css" rel="stylesheet" />
+    <script src="~/matrial_content/app.js"></script>
+    <!-- <link rel="manifest" href="manifest.json"> -->
+    <title></title>
+</head>
+<body>
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+            <!-- Header section containing title -->
+            <header class="mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
+                <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
+                    <div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--8-col-desktop">
+                        <h3>Promax Cloud Push Notification </h3>
+                        <span class="mdl-badge" data-badge="0" style="text-align:right;padding:2px;margin:30px;">
+                            New
+                        </span>
+                        <br />
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                            mdl-textfield--floating-label mdl-textfield--align-right" style="text-align:left;">
+                        <label class="mdl-button mdl-js-button mdl-button--icon" for="fixed-header-drawer-exp">
+                            <i class="material-icons">search</i>
+                        </label>
+                        <div class="mdl-textfield__expandable-holder">
+                            <input class="mdl-textfield__input" type="text" name="sample" id="fixed-header-drawer-exp">
+                        </div>
+                    </div>
+                </div>
+            </header>
+        <main class="mdl-layout__content mdl-color--grey-100" style="text-align:center;">
+            @RenderBody()
+</main>
+        <footer class="mdl-layout__header mdl-color-text--white mdl-color--light-blue-700" style="text-align:center;">
+
+            <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
+                <div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--8-col-desktop">
+                    <h4 style="text-align:center;">
+                        POWERED BY -
+                        <span style="color:rgb(207, 202, 202)"> Promax Scientific Developers Pvt. Ltd.</span>
+                    </h4>
+                </div>
+            </div>
+        </footer>
+  </div>
+   
+</body>
+</html>

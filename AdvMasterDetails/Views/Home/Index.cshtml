@@ -2,6 +2,9 @@
     ViewBag.Title = "Index";
 }
 <h1 style="text-align:center;margin-top:4%;"><i class="glyphicon glyphicon-list-alt"></i> Order Form</h1>
+@using (Html.BeginForm(null,null, FormMethod.Post, new { id = "_Orders" }))
+{
+  @Html.AntiForgeryToken()
 <div class="container" style="font-family:'Segoe UI';font-weight:400;">
     <div class="master" style="width:100%;">
         <h2><img id="applimg" src="http://d2trtkcohkrm90.cloudfront.net/images/emoji/apple/ios-10/33/0830.png" data-src="//d2trtkcohkrm90.cloudfront.net/images/emoji/apple/ios-10/33/0830.png" style="height: auto; max-width: 100%; vertical-align: middle; border: 0px; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial;"> Order List</h2>
@@ -9,7 +12,7 @@
             <tr class="col-md-12">
                 <td class="col-md-1"><i class="fa fa-file-text" aria-hidden="true"></i> Order No</td>
                 <td class="col-md-2">
-                    <input type="text" id="orderNo" class="form-control" disabled="disabled" />
+                    <input type="text" id="orderNo" class="form-control btn btn-default" disabled="disabled" style="font-weight:800 !important;font-size:20px;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;"/>
                     <span class="error">Order no required</span>
                 </td>
                 <td class="col-md-1"><i class="fa fa-calendar-o" aria-hidden="true"></i> Date</td>
@@ -21,19 +24,19 @@
             <tr class="col-md-12">
                 <td class="col-md-1"><i class="fa fa-envelope-o" aria-hidden="true"></i> Email ID</td>
                 <td class="col-md-2">
-                    <input id="Email" class="form-control" placeholder="Email ID" />
+                    <input id="Email" class="form-control" placeholder="Email ID"  type="email"/>
                     <span class="error">Order no required</span>
                 </td>
                 <td class="col-md-1"><i class="glyphicon glyphicon-earphone" aria-hidden="true"></i> Contact No</td>
                 <td class="col-md-2">
-                    <input id="phone" class="form-control" placeholder="Contact No" />
+                    <input id="phone" type="tel" class="form-control" placeholder="Contact No" />
                     <span class="error">Order no required</span>
                 </td>
              </tr>
             <tr class="col-md-12">
                 <td class="col-md-2">@*<i class="fa fa-building-o" aria-hidden="true"></i>*@🏢 Orgnisation</td>
                 <td class="col-md-10" style="padding-left:8px;width:925px;">
-                    <input id="company" class="form-control" placeholder="Orgnisation / Company Name"  style="text-transform:uppercase" />
+                    <input id="company" class="form-control" placeholder="Orgnisation / Company Name" style="text-transform:uppercase" type="text" maxlength="60" />
                     <span class="error">Orgnisation/Company Name required</span>
                 </td>
             </tr>
@@ -62,18 +65,22 @@
                 <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
             </div>
             <input type="hidden" id="dtp_input1" value="" /><br />
+            
         </div>
     </div>
-    <div class="details" style="width:100%;">
+    <div class="details" style="width:100%;border:1px;border-bottom-color:black;border-top-color:dodgerblue;">
         <h2>
             📋 Order items
         </h2>
         <table class="table table-responsive">
+            
+            
             <tr>
                 <td style="text-align:center;color:white;" bgcolor="black">Category</td>
                 <td style="text-align:center;color:white;" bgcolor="black">Product</td>
                 <td style="text-align:center;color:white;" bgcolor="black">Quantity</td>
                 <td style="text-align:center;color:white;" bgcolor="black">&nbsp;</td>
+                
             </tr>
             <tr class="mycontainer" id="mainrow">
                 <td>
@@ -107,27 +114,94 @@
         </div>
         <div style="padding:10px 10px; text-align:right">
             <input id="submit" type="button" value="💾 Save Order" class="btn btn-warning" style="padding:10px 20px" />
+
         </div>
+       @*<div style="text-align:left;">
+           <button type="button" class="avatar" onclick="showModel()" alt="Comment"><i class="fa fa-envelope"></i></button>
+       </div>*@
     </div>
 </div>
+}
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header modal-info">
+                <button type="button" class="close" data-dismiss="modal" onclick="window.location.reload();">&times;</button>
+                <h4 class="modal-title">Success</h4>
+            </div>
+            <div class="modal-body">
+                <div class="content">
+                    <div class="page-head-title wow fadeInDown" style="visibility: visible; animation-name: fadeInDown;text-align:center;">
+                        <div class="avatar-new">
+                            
+                        </div>
+                        <h2>Successfully Placed !</h2>
+                        <i class="glyphicon glyphicon-ok" style="color:#318124;"></i>
+                    </div>
+                    <div class="head-content">
+                        <p>Your Order is Successfully Placed , wait for Administration Review</p>
+                        <a href="~/Home/Index" title="Back to home"><i class="glyphicon glyphicon-arrow-left hvr-icon-buzz"></i> Back to Home</a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="window.location.reload();" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="modal fade" id="myModalError" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header modal-danger">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+               <div class="content">
+                   <div class="page-head-title wow fadeInDown" style="visibility: visible; animation-name: fadeInDown;">
+                      <h2>There is Error Accured !</h2>
+                       <i class="glyphicon glyphicon-remove" style="color:#e51e24;"></i>
+                   </div>
+                   <div class="head-content">
+                       <p>Due to Server Busy or Network Connection Error , Please Try Again after some time</p>
+                       <a href="~/Home/Index" title="Back to home"><i class="glyphicon glyphicon-arrow-left hvr-icon-buzz"></i> Back to Home</a>
+                   </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeModel" type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                
+                    
+            </div>
+        </div>
+      </div>
+</div>
+
+
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
 @section Scripts{
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script src="~/Scripts/myScripts.js"></script>
-<script type="text/javascript">
-    $(function () {
-        $('#orderDate').datepicker({
-            dateFormat: 'mm-dd-yy'
-        })        
-    })
-</script>
-<script>
+
+
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js" async></script>
+<script src="~/Scripts/myScripts.js" async></script>
+<script type="text/javascript" async>
     $(document).ready(function () {
        $('#orderNo').val(Date.now);
     });
 </script>
-<script type="text/javascript">
+<script type="text/javascript" async>
+    var showModel = function () {
+        $('#myModal').modal('show');
+    }
+</script>
+<script type="text/javascript" async>
     $('.form_datetime').datetimepicker({
         //language:  'fr',
         weekStart: 1,
@@ -160,7 +234,7 @@
 		forceParse: 0
     });
 </script>
-<script>
+<script type="text/javascript" async>
     var date = new Date();
 
     var day = date.getDate();
@@ -170,11 +244,17 @@
     if (month < 10) month = "0" + month;
     if (day < 10) day = "0" + day;
 
-    var today = month + "-" + day + "-" + year;
+    var today = day + "-" + month + "-" + year;
 
 
     document.getElementById('orderDate').value = today;
 </script>
+@*<script>
+function myFunction() {
+    var x = document.getElementById("#company");
+    x.value = x.value.toUpperCase();
+}
+</script>*@
     }
 <style>
     span.error{
@@ -193,6 +273,38 @@
     }
     td{
         text-align:center;
+    }
+    .avatar{
+        background-color:red;
+        border:none;
+        opacity:0.7;
+        height:60px;
+        width:60px ;
+        border-radius:50%;
+        padding:5px;
+        margin:0px 0px 20px 0px;
+        text-decoration:none;
+        color:white;
+    }
+    .avatar button:hover{
+      position:absolute;
+      background-color:red;
+      opacity:1;
+         
+    }
+    .avatar-new{
+        background-image:url("http://promaxhdevents.com/wp-content/uploads/2016/07/new-logo02-e1468052055630.png");
+        border:1px solid;
+        height:65px;
+        width:168px;
+        border-radius:5px;
+        border-color:rgb(150, 135, 135);
+        opacity:0.9;
+        background-repeat:no-repeat;
+        text-align:center;
+    }
+    .avatar-new:hover{
+        opacity:1;
     }
 </style>
 

@@ -19,6 +19,18 @@ namespace AdvMasterDetails
         public string Password { get; set; }
         public System.Guid SecretKey { get; set; }
         public Nullable<bool> AdminType { get; set; }
-        public System.Guid GlobalID { get; set; }
+        public Nullable<System.Guid> GlobalID { get; set; }
+        public Nullable<bool> SuperAdmin { get; set; }
+        public string ProfilePicPath { get; set; }
+        public byte[] imgsrc { get; set; }
+        public string Role { get; set; }
+        public string contact { get; set; }
+        public string State { get; set; }
+        public string NotiyMsg { get; set; }
+        public string JoiningDate { get; set; }
+        public string LastLoginTime { get; set; }
+        public Nullable<bool> AccountActive { get; set; }
+        public Nullable<decimal> OtpP { get; set; }
+        public string UserName { get; set; }
     }
 }

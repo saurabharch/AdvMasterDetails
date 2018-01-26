@@ -1,13 +1,20 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title -Promax Order Form</title>
+    
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     @*<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />*@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     @*<script src="~/Scripts/modernizr-2.6.2.js"></script>*@
    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script>
+   function updateIndicator() {
+             document.getElementById('indicator').textContent = navigator.onLine ? 'online' : 'offline';
+       }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -16,8 +23,8 @@
     <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
     <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
     <link href="~/Content/Style.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css"  />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js" async></script>
     <script>
         window.addEventListener("load", function () {
             window.cookieconsent.initialise({
@@ -40,52 +47,99 @@
         .body{
             overflow:hidden;
         }
+         .thick-green-border {
+        border-color: darkgrey;
+        border-width: 2px;
+        border-style: solid;
+        border-radius: 50%;
+    }
+
+    .smaller-image {
+        width: 30px;
+    }
+    .btn-pink {background-color: #ef4f85; border-color: #ef4f85; color: #fff; font-weight: 500; text-transform: uppercase;margin:8px;}
+    .nickName{
+        color: #fff; border-color: #ef4f85; color: #fff; font-weight: 200;margin:5px;
+    }
     </style>
 </head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Promax", "Index", "Home", null, new { @class = "navbar-brand" })
-                @Html.ActionLink("Login", "Login", "Login", null, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                </ul>
+<body onload="updateIndicator()" ononline="updateIndicator()" onoffline="updateIndicator()">
+    <p>The network is: <span id="indicator">(state unknown)</span></p>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Promax Order", "Index", "Home", null, new { @class = "navbar-brand" })
+                    @Html.ActionLink("Login", "Login", "Login", null, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                   <ul class="nav navbar-nav pull-right">
+                       <li>
+                       @if (Request.IsAuthenticated)
+                       {
+                           using (Html.BeginForm("Logout", "Login", FormMethod.Post, new { id = "logoutForm" }))
+                           {
+                            <img src="~/Content/img/user2-160x160.jpg" class="smaller-image thick-green-border" alt="User Image">
+                            <span class="nickName">@HttpContext.Current.User.Identity.Name</span>
+                            <a href="#" onclick="javascript:document.getElementById('logoutForm').submit()" class="btn btn-sm btn-pink">Sign out</a>
+                            @*<p onclick="javascript:document.getElementById('logoutForm').submit()"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</p>*@
+                          }      
+                       }
+                           @*<form action="/Login/Logout" id="logoutForm" method="post">
+                               
+                           </form>*@
+                       </li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-12 col-sm-12 col-lg-12" style="margin-top:2%;">
-        @RenderBody()
-    </div>
-    <footer id="footer" class="container-fluid" bgcolor="black" style="color:white;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="footer-social">
-                        <a href="#" target="_blank">
-                            <i class="fa fa-facebook"></i>
-                        </a>
-                        <a href="#" target="_blank">
-                            <i class="fa fa-twitter"></i>
-                        </a>
-                        <a href="#" target="_blank">
-                            <i class="fa fa-linkedin"></i>
-                        </a>
-                    </div>
-                    <div class="footer-text">
-                        <p> <a href="#" target="_blank" title="Promax">Powered By - ProMax</a></p>
+        <div class="col-md-12 col-sm-12 col-lg-12" style="margin-top:2%;">
+
+            @RenderBody()
+        </div>
+        <footer id="footer" class="container-fluid" bgcolor="black" style="color:white;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="footer-social">
+                            <a href="#" target="_blank">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+                            <a href="#" target="_blank">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                            <a href="#" target="_blank">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        </div>
+                        <div class="footer-text">
+<p> <a href="#" target="_blank" title="Promax">Powered By - ProMax</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
+    <!-- Paste Free Call code right before the closing body tag </BODY> -->
+    <!-- begin www.FreeCallinc.com code -->
+    <script type="text/javascript">
+(function() {
+  var dg_scr = document.createElement('script'); dg_scr.type = 'text/javascript'; dg_scr.async = true;
+  dg_scr.src = (('https:' == document.location.protocol) ? 'https://' : 'http://') + 'track.freecallinc.com/freecall.js';
+  dg_scr.onload = function(){
+    try {
+      deskGod.track(16937, 16741);
+    } catch(err){ }
+  };
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(dg_scr, s);
+})();
+    </script>
+    <!-- end www.FreeCallinc.com code -->
     @RenderSection("Scripts", required: false)
 </body>
 </html>

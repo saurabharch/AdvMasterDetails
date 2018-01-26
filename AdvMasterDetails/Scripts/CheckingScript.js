@@ -88,12 +88,18 @@ function LoadProductavl() {
     else {
         $('#ToDate').siblings('span.error').css('visibility', 'hidden');
     }
+    var verificationToken = $('[name=__RequestVerificationToken]').val();
     if (isThisValid) {
+        var verificationToken = $('[name=__RequestVerificationToken]').val();
         $.ajax({
+
             context: $(this),
             type: 'POST',
-            url: '/home/ProdCheckAvailiblity?fromDate=' + fmdt + '&ToDate=' + tmdt + '&ProdId=' + productid + '&state=Aprroved%20-%20Package&Quantity=' + quantity,
+            headers: verificationToken,
+            url: '/home/ProdCheckAvailiblity?fromDate=' + fmdt + '&ToDate=' + tmdt + '&ProdId=' + productid + '&state=Approved - Package&Quantity=' + quantity,
             data: JSON.stringify(data),
+            cache: false,
+            async: true,
             contentType: 'application/json',
             success: function (data) {
 

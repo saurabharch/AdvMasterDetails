@@ -1,4 +1,4 @@
 Public DNS	ec2-18-216-113-5.us-east-2.compute.amazonaws.com   
 ip:             18.216.113.5
 User name	Administrator
-Password	?mh5J6;*V3
+Password	?mh5J6;*V3    

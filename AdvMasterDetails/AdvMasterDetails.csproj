@@ -280,6 +280,8 @@
     <Content Include="Content\fullcalendar\fullcalendar.min.css" />
     <Content Include="Content\fullcalendar\fullcalendar.print.css" />
     <Content Include="Content\fullcalendar\fullcalendar.print.min.css" />
+    <Content Include="Content\images\fevicon.ico" />
+    <Content Include="Content\images\promax.png" />
     <Content Include="Content\img\avatar.png" />
     <Content Include="Content\img\avatar04.png" />
     <Content Include="Content\img\avatar2.png" />
@@ -1406,6 +1408,10 @@
     <Content Include="Content\jquery-ui\themes\vader\jquery-ui.min.css" />
     <Content Include="Content\jquery-ui\themes\vader\theme.css" />
     <Content Include="Content\jvectormap\jquery-jvectormap.css" />
+    <Content Include="matrial_content\images\fevicon.ico" />
+    <Content Include="matrial_content\images\promax.png" />
+    <Content Include="matrial_content\main.css" />
+    <Content Include="matrial_content\materialStyle.css" />
     <Content Include="Content\morris.js\morris.css" />
     <Content Include="Content\PACE\themes\black\pace-theme-barber-shop.css" />
     <Content Include="Content\PACE\themes\black\pace-theme-big-counter.css" />
@@ -1741,6 +1747,7 @@
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="ErrorPage\Error.html" />
+    <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -1774,6 +1781,7 @@
       <DependentUpon>MyModel.edmx</DependentUpon>
       <LastGenOutput>MyModel.cs</LastGenOutput>
     </Content>
+    <Content Include="matrial_content\app.js" />
     <Content Include="Scripts\bower_components\Flot\flot.jquery.json" />
     <Content Include="Content\font-awesome\css\font-awesome.css.map" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.eot" />
@@ -1848,6 +1856,7 @@
     <Content Include="MyModel.edmx.diagram">
       <DependentUpon>MyModel.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\Cart Order.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
@@ -2226,25 +2235,33 @@
     <Content Include="Scripts\dist\js\demo.js" />
     <Content Include="Scripts\dist\js\pages\dashboard.js" />
     <Content Include="Scripts\dist\js\pages\dashboard2.js" />
+    <Content Include="Scripts\font-awesome.js" />
     <Content Include="Scripts\jquery-3.2.1.js" />
     <Content Include="Scripts\jquery-3.2.1.min.js" />
     <Content Include="Scripts\jquery-3.2.1.slim.js" />
     <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
+    <Content Include="Scripts\jquery-checknet.js" />
+    <Content Include="Scripts\jquery-ui.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
+    <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="matrial_content\material.min.js" />
     <Content Include="Scripts\myScripts.js" />
     <Content Include="Scripts\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.all.js" />
     <Content Include="Scripts\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.all.min.js" />
+    <Content Include="matrial_content\service-worker.js" />
+    <Content Include="Scripts\service-worker.js" />
     <Content Include="Scripts\tether.js" />
     <Content Include="Scripts\tether.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AES256Encryption\EncryptionLibrary.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Category.cs">
       <DependentUpon>MyModel.tt</DependentUpon>
@@ -2252,7 +2269,9 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PassResetController.cs" />
+    <Compile Include="Controllers\PushController.cs" />
     <Compile Include="ExtendedModel\OrderMaster.cs" />
+    <Compile Include="Filters\ValidateSessionAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -2319,6 +2338,8 @@
     <Content Include="Views\Home\OrderProducts.cshtml" />
     <Content Include="Views\PassReset\Forget.cshtml" />
     <Content Include="Views\PassReset\ChangePassword.cshtml" />
+    <Content Include="Views\Push\Index.cshtml" />
+    <Content Include="Views\Shared\_material.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

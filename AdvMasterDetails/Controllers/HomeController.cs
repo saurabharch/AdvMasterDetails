@@ -20,6 +20,7 @@ using System.Security.Principal;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace AdvMasterDetails.Controllers
 {
@@ -27,6 +28,8 @@ namespace AdvMasterDetails.Controllers
     {
         InventoryDBEntities dc = new InventoryDBEntities();
         int order;
+
+        [OutputCache(Duration = 300, VaryByParam = "none")]
         public ActionResult Index()
         {
             return View();
@@ -46,7 +49,7 @@ namespace AdvMasterDetails.Controllers
 
         //Get Product List
         [HttpGet]
-        public JsonResult getProducts(int categoryID)
+        public async Task<JsonResult> getProducts(int categoryID)
         {
             List<Product> products = new List<Product>();
             using (InventoryDBEntities dc = new InventoryDBEntities())
@@ -69,7 +72,7 @@ namespace AdvMasterDetails.Controllers
         //}
         [Authorize]
         [HttpGet]
-        public JsonResult ApprovedOrderList(bool check)
+        public async Task<JsonResult> ApprovedOrderList(bool check)
         {
             List<OrderMaster> Approve = new List<OrderMaster>();
             try
@@ -90,13 +93,15 @@ namespace AdvMasterDetails.Controllers
             }
         }
         [Authorize]
+        //[ValidateAntiForgeryToken]
         public ActionResult AprrovedOrder()
         {
             return View();
         }
 
         [Authorize]
-        public JsonResult OrderList(string OrderNumber)//Find Order List By Order ID//
+        //[ValidateAntiForgeryToken]
+        public async Task<JsonResult> OrderList(string OrderNumber)//Find Order List By Order ID//
         {
             var result = "";
             if (IsOrderNumberExist(OrderNumber))
@@ -107,7 +112,7 @@ namespace AdvMasterDetails.Controllers
                 {
                     var ErrorResult = _objError.OrderMasters.Where(a => a.OrderNo == OrderNumber).FirstOrDefault();
                     int order = ErrorResult.OrderID;
-                    var OrdersList = _objError.OrderDetails.Where(a => a.OrderID == order).ToList();
+                    var OrdersList =  _objError.OrderDetails.Where(a => a.OrderID == order).ToList();
                     result = JsonConvert.SerializeObject(OrdersList, Formatting.None,
                                new JsonSerializerSettings
                                {
@@ -131,6 +136,7 @@ namespace AdvMasterDetails.Controllers
         
         [HttpPost]
         [Authorize]
+        //[ValidateAntiForgeryToken]
         public async Task<JsonResult> OrderProducts(string OrderNo)
         {
             bool status = false;
@@ -195,19 +201,20 @@ namespace AdvMasterDetails.Controllers
         //    return j.Serialize(OrderL);
         //}
         [Authorize]
-        [HttpGet]        //Get Remarks List
-        public JsonResult Remarks()
+        [HttpGet]   
+        //Get Remarks List
+        public async Task<JsonResult> Remarks()
         {
             List<Remark> Remark = new List<Remark>();
             using (InventoryDBEntities dc = new InventoryDBEntities())
             {
-                Remark = dc.Remarks.OrderBy(a => a.RemarkId).ToList();
+                Remark =  dc.Remarks.OrderBy(a => a.RemarkId).ToList();
             }
             return new JsonResult { Data = Remark, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
-        [Authorize]
-        public JsonResult RemarkProductList(string Orderid)
+       [Authorize]
+        public async Task<JsonResult> RemarkProductList(string Orderid)
         {
             List<Product> Remark = new List<Product>();
             var Hello ="";
@@ -259,7 +266,7 @@ namespace AdvMasterDetails.Controllers
 
         //Save & Approval , WareHouse , Customer Copy Mail
         [HttpPost]
-        public JsonResult save(OrderMaster order, RemarksTable RT,OrderDetail OD)
+        public async Task<JsonResult> save(OrderMaster order, RemarksTable RT,OrderDetail OD)
         {
             bool status = false;
             string OrderList = "";
@@ -295,6 +302,7 @@ namespace AdvMasterDetails.Controllers
                         else
                         {
                             order.Status = "Un-Approved";
+                            OD.Status = "Un-Approved";
 
                         }
                         if (order.Remarks != null)
@@ -304,6 +312,7 @@ namespace AdvMasterDetails.Controllers
                         else
                         {
                             order.Remarks = "Not Return";
+                            OD.Remarks = "Un-Approved";
                         }
                         if (order.AdminApproved == false)
                         {
@@ -351,7 +360,9 @@ namespace AdvMasterDetails.Controllers
                                 int ProductMax = Convert.ToInt16(ProName.CountMax);
                                 int ProducntMin = Convert.ToInt16(ProName.CountMin);
                                 int SrNo = i + 1;
-                                int CountShort = ProductMax - Quantity;
+                                var CountShort1 = dc.sp_ProductAvailibility(order.FromDate, order.ToDate, ProductId, "Approved - Package", Quantity).FirstOrDefault();
+                                int CountShort = CountShort1.Value- Quantity;
+                               /* int CountShort = ProductMax - Quantity*/;
                                 if (CountShort >= 0)
                                 {
                                     if (SrNo % 2 == 0)
@@ -517,6 +528,12 @@ namespace AdvMasterDetails.Controllers
                             SendEmailToWareHouse(order.Email, SubAdmin, CompanyName, OrderNo, ReplaceTitleBody.ToString(), OrderListC, TotalQuantitySum, order.ContactNo, order.FromDate, order.ToDate, order.GUID.ToString(), orderDate.ToString());
                             CustomerCopyEmail(order.Email, SubCus, CompanyName, OrderNo, "", MainBodyW.ToString(), OrderListC, TotalQuantitySum, order.ContactNo, order.FromDate, order.ToDate, order.GUID.ToString(), orderDate.ToString());
                             CustomerCopyEmail(order.Email, SubCuss, CompanyName, OrderNo, "", MainBody1.ToString(), OrderListC, TotalQuantitySum, order.ContactNo, order.FromDate, order.ToDate, order.GUID.ToString(), orderDate.ToString());
+                            Thread threid = new System.Threading.Thread(delegate ()
+                            {
+                                SendSMS(order.ContactNo, CompanyName + " Your Order " + OrderNo + " is Successfully Placed. Please wait for until Review");
+                            });
+                            threid.Start();
+                            threid.Join();
                         }
                     }
                 }
@@ -530,6 +547,7 @@ namespace AdvMasterDetails.Controllers
 
         // Approved Confirmation Mail
         [HttpGet]
+        //[ValidateAntiForgeryToken]
         public ActionResult ApprovedOrder(string id, RemarksTable RT)
         {
             bool Status = false;
@@ -542,7 +560,7 @@ namespace AdvMasterDetails.Controllers
             string orderDate = "";
             try
             {
-                using (InventoryDBEntities dc = new InventoryDBEntities())
+                using (InventoryDBEntities de = new InventoryDBEntities())
                 {
                     dc.Configuration.ValidateOnSaveEnabled = false; // Avoid Confirmation password does not match on save changes
                     var v = dc.OrderMasters.Where(a => a.GUID == new Guid(id)).FirstOrDefault();
@@ -552,7 +570,7 @@ namespace AdvMasterDetails.Controllers
                         //v.ActivationCode = Guid.NewGuid();
                         v.Remarks = "Approved";
                         v.Status = "Approved";
-                       // dc.SaveChanges();
+                        dc.SaveChanges();
                         Status = true;
                         string ComName = v.Company;
                         message = ComName + " Order Has Been Approved";
@@ -563,15 +581,15 @@ namespace AdvMasterDetails.Controllers
                         OrderNo = v.OrderNo;
                         orderDate = v.OrderDate;
                         CompanyName = v.Company;
-                        var OrderGlobalID = dc.OrderDetails.Where(p => p.OrderID == OrderId).ToList();
+                        var OrderGlobalID = de.OrderDetails.Where(p => p.OrderID == OrderId).ToList();
 
                         for (int i = 0; i <= OrderGlobalID.Count - 1; i++)
                         {
                             RT.GUID = OrderGlobalID[i].GUID;
                             OrderGlobalID[i].Status = "Approved - Package";
                             OrderGlobalID[i].Remarks = "Warehouse - package";
-                            dc.OrderDetails.Add(OrderGlobalID[i]);
-                           // dc.SaveChanges();
+                           // dc.OrderDetails.Add(OrderGlobalID[i]);
+                            de.SaveChanges();
                             var RemarkAdd = dc.RemarksTables.Where(a => a.GUID == RT.GUID).FirstOrDefault();
                             RemarkAdd.Remark = "Approved For Packaging";
                             RemarkAdd.Status = "Warehouse - packaging";
@@ -674,6 +692,12 @@ namespace AdvMasterDetails.Controllers
                         SendEmailToWareHouse(v.Email, WareHouseSub, CompanyName, OrderNo, MainBody, OrderList, TotalQuantitySum, v.ContactNo, v.FromDate, v.ToDate, v.GUID.ToString(), orderDate.ToString());
                         CustomerCopyEmail(v.Email, CusSub, v.Company, OrderNo, PraMsg, MainBody1, OrderList, TotalQuantitySum, v.ContactNo, v.FromDate, v.ToDate, v.GUID.ToString(), v.OrderDate);
                         Status = true;
+                        Thread threid = new System.Threading.Thread(delegate ()
+                        {
+                            SendSMS(v.ContactNo, v.Company+ " Your Order " + OrderNo + " shipment is Accepted . For More contact on +91 9623 718383 , 8378 972253");
+                        });
+                        threid.Start();
+                        threid.Join();
                     }
                     else
                     {
@@ -698,6 +722,7 @@ namespace AdvMasterDetails.Controllers
         //Ready to cart Mail
         [Authorize]
         [HttpGet]
+        //[ValidateAntiForgeryToken]
         public ActionResult OrderStatus(string id, RemarksTable RT)
         {
             bool Status = false;
@@ -731,7 +756,7 @@ namespace AdvMasterDetails.Controllers
                         for (int i = 0; i <= OrderGlobalID.Count - 1; i++)
                         {
                             RT.GUID = OrderGlobalID[i].GUID;
-                            OrderGlobalID[i].Status = "Ready - In Cart";
+                            OrderGlobalID[i].Status = "Approved - Package";
                             OrderGlobalID[i].Remarks = "Ready - In Cart";
                            // dc.OrderDetails.Add(OrderGlobalID[i]);
                             dc.SaveChanges();
@@ -783,6 +808,12 @@ namespace AdvMasterDetails.Controllers
                         string CusSubj = "🚚 Your Order is Ready For Cart!";
                         CustomerCopyEmail(v.Email, CusSubj, v.Company, OrderNo, ParaMsg, MainBody, OrderList, TotalQuantitySum, v.ContactNo, v.FromDate, v.ToDate, v.GUID.ToString(), v.OrderDate);
                         Status = true;
+                        Thread threid = new System.Threading.Thread(delegate ()
+                        {
+                            SendSMS(v.ContactNo, v.Company+ " Your shipment Order " + OrderNo + " is ready Please Contact on +91 9623 718383 , 8378 972253");
+                        });
+                        threid.Start();
+                        threid.Join();
                     }
                     else
                     {
@@ -806,6 +837,7 @@ namespace AdvMasterDetails.Controllers
 
         [Authorize]
         [HttpGet]
+        //[ValidateAntiForgeryToken]
         public ActionResult OrderCancel(string id, RemarksTable RT)
         {
             bool Status = false;
@@ -891,6 +923,12 @@ namespace AdvMasterDetails.Controllers
                         string CusSubj = "🚚 Your Order is Cancelled !";
                         CustomerCopyEmail(v.Email, CusSubj, v.Company, OrderNo, ParaMsg, MainBody, OrderList, TotalQuantitySum, v.ContactNo, v.FromDate, v.ToDate, v.GUID.ToString(), v.OrderDate);
                         Status = true;
+                        Thread threid = new System.Threading.Thread(delegate ()
+                        {
+                            SendSMS(v.ContactNo, v.Company+ " Your Order " + OrderNo + " Has been Cancelled Due to Un-Availability of cart items");
+                        });
+                        threid.Start();
+                        threid.Join();
                     }
                     else
                     {
@@ -916,6 +954,7 @@ namespace AdvMasterDetails.Controllers
         [Authorize]
         //Load Dashboard
         [HttpGet]
+        //[ValidateAntiForgeryToken]
         public ActionResult Dashboard()
         {
             return View();
@@ -1004,8 +1043,9 @@ namespace AdvMasterDetails.Controllers
         [HttpPost]
         [Authorize]
         [ActionName("ProdCheckAvailiblity")]
+        //[ValidateAntiForgeryToken]
         //Checking Product is available withing the time period as per required quantity
-        public JsonResult ProdCheckAvailiblity(string fromDate, string ToDate, string ProdId, string state, string Quantity)
+        public async Task<JsonResult> ProdCheckAvailiblity(string fromDate, string ToDate, string ProdId, string state, string Quantity)
         {
             bool status = false;
             string data = "";
@@ -1025,7 +1065,7 @@ namespace AdvMasterDetails.Controllers
                 {
                     var AvProdCounts = dc.sp_ProductAvailibility(fromDate, ToDate, ProductID, state, Quant).FirstOrDefault();
                     AVProdCount = AvProdCounts.Value;
-                    if (AVProdCount != 0)
+                    if (AVProdCount >= 0)
                     {
                         status = true;
                     }
@@ -1391,7 +1431,7 @@ namespace AdvMasterDetails.Controllers
              "<table>" +
              "<tr>" +
              "<td>"+
-             "<p>Some products have a limited quantity available for rent. Please see the product’s Detail Page for the available quantity. Any orders which exceed this quantity will be automatically canceled.</p>" +
+             "<p style='font-size:10px;color:darkgray;'>some products have a limited quantity available for rent. please see the product’s detail Page for the available quantity. any orders which exceed this quantity will be automatically canceled.</p>" +
              "</td>" +
                "</tr>" +
              "</table>" +
@@ -1765,6 +1805,33 @@ namespace AdvMasterDetails.Controllers
             catch (Exception exmsg)
             {
 
+            }
+        }
+
+
+        public static string SendSMS(string Tos, string msg)
+        {
+            try
+            {
+
+
+                string strUrl = "http://www.smsjust.com/blank/sms/user/urlsms.php?username=promax&pass=promax@1234&senderid=promax&message=" + msg + "&dest_mobileno=" + Tos + "&response=Y";
+
+                // Create a request object  
+                WebRequest request = HttpWebRequest.Create(strUrl);
+                // Get the response back  
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream s = (Stream)response.GetResponseStream();
+                StreamReader readStream = new StreamReader(s);
+                string dataString = readStream.ReadToEnd();
+                response.Close();
+                s.Close();
+                readStream.Close();
+                return "Message Sent Successfully.";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
             }
         }
 

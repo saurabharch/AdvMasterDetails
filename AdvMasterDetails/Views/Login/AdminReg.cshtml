@@ -1,4 +1,4 @@
-﻿@model AdvMasterDetails.Models.Login
+﻿@model AdvMasterDetails.Models.LoginCred
 
 @{
     ViewBag.Title = "AdminReg";
@@ -29,7 +29,7 @@
 
                             <div class="page-head-title wow fadeInDown" style="visibility: visible; animation-name: fadeInDown;">
                                 <img class="smaller-image thick-green-border" style="background-color:black;" src="~/Content/img/PromaxLogo_64.png" alt="Promax_logo"><hr />
-                                <div class="title-area">
+                                <div class="title-area" style="margin-bottom:30px;">
                                     <h2 class="title">ADMIN REGISTER<span> HERE</span></h2>
                                 </div><hr />
 
@@ -39,6 +39,8 @@
 
                                         @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email Id" } })
                                         @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })<br />
+                                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Nickname Or Username" } })
+                                        @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })<br />
                                         @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password" } })
                                         @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                                     </div>
@@ -57,3 +59,8 @@
         </div>
     </div>
 </div>
+@section Scripts{
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}
